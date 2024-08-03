@@ -48,7 +48,8 @@ dat <- dat %>% dplyr::mutate(
   gender = ifelse(gender %in% c("Male", "Female"), gender, NA),
   youth = age_group == "18-24 years old",
   youth = ifelse(youth, "Age 18-24", "Age25+"),
-  Region = as.character(region))
+  Region = as.character(region), 
+  country = as.character(country))
 
 
 ```
@@ -155,9 +156,11 @@ list_graphs <-
 for(i in 1:length(list_graphs)) {
   list_graphs[[i]]$t1 %>% knitr::kable() %>% print()
   list_graphs[[i]]$p1 %>% print()
-  list_graphs[[i]]$t2 %>% knitr::kable() %>% print()
+  list_graphs[[i]]$t2 %>% 
+    dplyr::arrange(country) %>% 
+    knitr::kable() %>% print()
   list_graphs[[i]]$p2 %>% print()
-  cat("\\pagebreak")
+  cat('\\newpage')
 }
 
 
@@ -197,9 +200,11 @@ list_graphs <- lapply(1:13, function(x) {
 for(i in 1:length(list_graphs)) {
   list_graphs[[i]]$t1 %>% knitr::kable() %>% print()
   list_graphs[[i]]$p1 %>% print()
-  list_graphs[[i]]$t2 %>% knitr::kable() %>% print()
+  list_graphs[[i]]$t2 %>% 
+    dplyr::arrange(country) %>% 
+    knitr::kable() %>% print()
   list_graphs[[i]]$p2 %>% print()
-  cat("\\pagebreak")
+  cat('\\newpage')
 }
 
 

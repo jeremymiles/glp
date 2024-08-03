@@ -1,0 +1,206 @@
+---
+title: "Global Listening Project"
+format: pdf
+editor: visual
+author:
+ - name: Alexander Miles
+   affiliations:
+     - id: University of Southern California
+ - name: Jeremy Miles
+   affiliations:
+      - id: Google
+ - name: GLP Project Team
+date: today
+echo: false  # Hides code by default for all chunks
+
+
+---
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+library(foreign)
+
+options(dplyr.summarise.inform = FALSE)
+
+setwd("C:\\Users\\jerem\\Downloads") ### FIX
+
+suppressWarnings({
+  orig_dat <- foreign::read.spss("Global Listening Project - Final Data.sav", 
+                          to.data.frame = TRUE) 
+})
+```
+
+```{r}
+
+
+```
+
+```{r}
+
+
+dat <- orig_dat
+names(dat) <- tolower(names(dat)) 
+dat <- dat %>% dplyr::mutate(
+  global_region = as.character(global_region),
+  gender = as.character(gender),
+  gender = ifelse(gender %in% c("Male", "Female"), gender, NA),
+  youth = age_group == "18-24 years old",
+  youth = ifelse(youth, "Age 18-24", "Age25+"),
+  Region = as.character(region))
+
+
+```
+
+## Trust in Media for Sources of Information
+
+Imagine there was an emerging crisis in your country that you were very concerned about and
+wanted to learn more about (for example, a flood, pandemic, or food/water shortages).
+How likely would you be to trust the following sources to give you the most accurate, truthful
+information?
+
+
+```{r}
+#| fig-width: 9
+#| fig-height: 10
+
+TrustGraphs <- function(varq, var_label) {
+  dat$var <- dat[[varq]]
+  
+  #Create summary by for all countries
+  summary_dat <- dat %>% 
+    dplyr::filter(var != "Don't know/ Refused") %>%
+    dplyr::group_by(var, youth) %>% 
+    dplyr::summarise(n = dplyr::n()) %>% 
+    dplyr::group_by(youth) %>% 
+    dplyr::mutate(tot = sum(n), prop = n / tot) %>%
+    dplyr::ungroup()
+  
+  t1 <- summary_dat %>%
+    dplyr::select(var, youth, prop) %>%
+    dplyr::mutate(prop = round(prop, 2)) %>%
+    tidyr::pivot_wider(
+      names_from = youth, values_from = prop
+      ) %>%
+    dplyr::rename(Likelihood = var)
+
+  names(t1)[[1]] <- var_label
+  
+  # plot for all countries
+  p1 <- summary_dat %>%
+    ggplot2::ggplot(aes(x = youth, y = prop, fill = var)) +
+    ggplot2::geom_bar(stat = "identity") + 
+    ylab(glue::glue("Proportion ", var_label)) +
+    xlab("Age Group") + 
+    labs(fill = "Likelihood of Trust") +
+    ggtitle(glue::glue(var_label, ": all countries")) +
+    theme(axis.text.x=element_text(angle=90, hjust=1))
+  
+  summary_country_dat <- dat %>% 
+    dplyr::filter(var != "Don't know/ Refused") %>%
+    dplyr::group_by(var, youth, country) %>% 
+    dplyr::summarise(n = dplyr::n()) %>% 
+    dplyr::group_by(youth, country) %>% 
+    dplyr::mutate(tot = sum(n), prop = n / tot) 
+  
+  
+  
+  t2 <- summary_country_dat %>%
+    dplyr::select(var, youth, prop, country) %>%
+    dplyr::mutate(prop = round(prop, 2)) %>%
+    tidyr::pivot_wider(
+      names_from = youth, values_from = prop
+      ) %>%
+    dplyr::rename(Likelihood = var) %>%
+    dplyr::arrange(country)
+
+  names(t2)[[1]] <- var_label
+  
+  p2 <- summary_country_dat %>%
+    ggplot2::ggplot(aes(x = youth, y = prop, fill = var)) +
+    ggplot2::geom_bar(stat = "identity") +
+    facet_wrap(~country) + 
+    ylab(glue::glue("Proportion ", var_label)) +
+    xlab("Age Group") + 
+    labs(fill = "Likelihood of Trust") +
+    ggtitle(var_label) +
+    theme(axis.text.x=element_text(angle=90, hjust=1))
+  
+  return(list(p1 = p1, p2 = p2, t1 = t1, t2 = t2))
+}  
+
+trust_vars <- paste0("a1_", 1:13)
+trust_sources <- 
+  c("National TV",
+    "Local TV",
+    "National Radio",
+    "Local Radio",
+    "International TV",
+    "International Radio",
+    "National Print Media",
+    "Local Print Media",
+    "Word of mouth",
+    "Govt Communication",
+    "Social Media",
+    "Internet",
+    "Messaging Platforms")
+
+list_graphs <- 
+  lapply(1:13, function(x) {
+    TrustGraphs(var = trust_vars[[x]], var_label = trust_sources[x])
+  })
+
+
+for(i in 1:length(list_graphs)) {
+  list_graphs[[i]]$t1 %>% knitr::kable() %>% print()
+  list_graphs[[i]]$p1 %>% print()
+  list_graphs[[i]]$t2 %>% knitr::kable() %>% print()
+  list_graphs[[i]]$p2 %>% print()
+  cat("\\pagebreak")
+}
+
+
+```
+## Trust in Individuals
+
+Again, thinking about an emerging crisis in your country that you were very concerned about
+and wanted to learn more about (for example, a flood, pandemic, or food/water shortages). Who
+would you likely turn to for information?
+
+```{r}
+#| fig-width: 9
+#| fig-height: 10
+
+rm(trust_vars)
+rm(trust_sources)
+trust_vars <- paste0("a2_", 1:13)
+trust_sources <- 
+  c("Family members",
+    "Religious leaders",
+    "Community leaders",
+    "Friends",
+    "Social media influencers",
+    "Local politicians",
+    "Government and political leaders",
+    "Local Print Media",
+    "Journalists",
+    "NGOs / CSOs",
+    "International Authorities",
+    "Family doctor / healthcare",
+    "Scientists")
+
+list_graphs <- lapply(1:13, function(x) {
+  TrustGraphs(var = trust_vars[[x]], var_label = trust_sources[x])
+})
+
+for(i in 1:length(list_graphs)) {
+  list_graphs[[i]]$t1 %>% knitr::kable() %>% print()
+  list_graphs[[i]]$p1 %>% print()
+  list_graphs[[i]]$t2 %>% knitr::kable() %>% print()
+  list_graphs[[i]]$p2 %>% print()
+  cat("\\pagebreak")
+}
+
+
+```

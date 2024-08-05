@@ -12,29 +12,35 @@ author:
  - name: GLP Project Team
 date: today
 echo: false  # Hides code by default for all chunks
-
-
 ---
 
-```{r}
+```{r warning = FALSE, message = FALSE}
 
 library(dplyr)
-library(ggplot2)
 library(foreign)
+library(ggplot2)
+library(haven)
 
-options(dplyr.summarise.inform = FALSE)
 
-setwd("C:\\Users\\jerem\\Downloads") ### FIX
+# Download the .sav file from the URL
+url <- "https://github.com/jeremymiles/glp/blob/main/Global%20Listening%20Project%20-%20Final%20Data.sav?raw=true"
+download.file(url, destfile = "Global_Listening_Project_Final_Data.sav", mode = "wb")
 
+# Read the .sav file using haven
+# Want to use foreign, as it keeps factor labels. Foreign can't read from the url, unclear why. Fix is to load with haven, write sav file, and read that with foreign
+data_haven <- haven::read_sav("Global_Listening_Project_Final_Data.sav")
+
+# Save the data as a .sav file in a format compatible with foreign
+write_sav(data_haven, "Compatible_Final_Data.sav")
+
+# Now read the newly saved .sav file using foreign
 suppressWarnings({
-  orig_dat <- foreign::read.spss("Global Listening Project - Final Data.sav", 
+  orig_dat <- foreign::read.spss("Compatible_Final_Data.sav", 
                           to.data.frame = TRUE) 
 })
-```
 
-```{r}
-
-
+# Removing data_haven from R environment
+rm(data_haven)
 ```
 
 ```{r}
@@ -51,16 +57,11 @@ dat <- dat %>% dplyr::mutate(
   Region = as.character(region), 
   country = as.character(country))
 
-
 ```
 
 ## Trust in Media for Sources of Information
 
-Imagine there was an emerging crisis in your country that you were very concerned about and
-wanted to learn more about (for example, a flood, pandemic, or food/water shortages).
-How likely would you be to trust the following sources to give you the most accurate, truthful
-information?
-
+Imagine there was an emerging crisis in your country that you were very concerned about and wanted to learn more about (for example, a flood, pandemic, or food/water shortages). How likely would you be to trust the following sources to give you the most accurate, truthful information?
 
 ```{r}
 #| fig-width: 9
@@ -147,6 +148,9 @@ trust_sources <-
     "Internet",
     "Messaging Platforms")
 
+# Set dplyr option to suppress group by messages
+options(dplyr.summarise.inform = FALSE)
+
 list_graphs <- 
   lapply(1:13, function(x) {
     TrustGraphs(var = trust_vars[[x]], var_label = trust_sources[x])
@@ -165,11 +169,10 @@ for(i in 1:length(list_graphs)) {
 
 
 ```
+
 ## Trust in Individuals
 
-Again, thinking about an emerging crisis in your country that you were very concerned about
-and wanted to learn more about (for example, a flood, pandemic, or food/water shortages). Who
-would you likely turn to for information?
+Again, thinking about an emerging crisis in your country that you were very concerned about and wanted to learn more about (for example, a flood, pandemic, or food/water shortages). Who would you likely turn to for information?
 
 ```{r}
 #| fig-width: 9

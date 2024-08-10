@@ -59,11 +59,8 @@ dat <- dat %>% dplyr::mutate(
 
 ```
 
-## A1
-Trust in Media for Sources of Information
 
-Imagine there was an emerging crisis in your country that you were very concerned about and wanted to learn more about (for example, a flood, pandemic, or food/water shortages). How likely would you be to trust the following sources to give you the most accurate, truthful information?
-
+### Function to create the Graphs
 ```{r}
 #| fig-width: 9
 #| fig-height: 10
@@ -157,7 +154,21 @@ TrustGraphs <- function(varq, var_label) {
               t1 = t1, 
               t2 = t2, 
               country_plots = country_plots))
-}  
+} 
+
+
+
+```
+
+
+
+## A1
+Trust in Media for Sources of Information
+
+Imagine there was an emerging crisis in your country that you were very concerned about and wanted to learn more about (for example, a flood, pandemic, or food/water shortages). How likely would you be to trust the following sources to give you the most accurate, truthful information?
+
+```{r}
+ 
 
 trust_vars <- paste0("a1_", 1:13)
 trust_sources <- 
@@ -178,19 +189,19 @@ trust_sources <-
 # Set dplyr option to suppress group by messages
 options(dplyr.summarise.inform = FALSE)
 
-list_graphs <- 
+list_graphs_A1 <- 
   lapply(1:13, function(x) {
     TrustGraphs(var = trust_vars[[x]], var_label = trust_sources[x])
   })
 
 
-for(i in 1:length(list_graphs)) {
-  list_graphs[[i]]$t1 %>% knitr::kable() %>% print()
-  list_graphs[[i]]$p1 %>% print()
-  list_graphs[[i]]$t2 %>% 
+for(i in 1:length(list_graphs_A1)) {
+  list_graphs_A1[[i]]$t1 %>% knitr::kable() %>% print()
+  list_graphs_A1[[i]]$p1 %>% print()
+  list_graphs_A1[[i]]$t2 %>% 
     dplyr::arrange(country) %>% 
     knitr::kable() %>% print()
-  list_graphs[[i]]$p2 %>% print()
+  list_graphs_A1[[i]]$p2 %>% print()
   cat('\\newpage')
 }
 
@@ -223,17 +234,17 @@ trust_sources <-
     "Family doctor / healthcare",
     "Scientists")
 
-list_graphs <- lapply(1:13, function(x) {
+list_graphs_A2 <- lapply(1:13, function(x) {
   TrustGraphs(var = trust_vars[[x]], var_label = trust_sources[x])
 })
 
-for(i in 1:length(list_graphs)) {
-  list_graphs[[i]]$t1 %>% knitr::kable() %>% print()
-  list_graphs[[i]]$p1 %>% print()
-  list_graphs[[i]]$t2 %>% 
+for(i in 1:length(list_graphs_A2)) {
+  list_graphs_A2[[i]]$t1 %>% knitr::kable() %>% print()
+  list_graphs_A2[[i]]$p1 %>% print()
+  list_graphs_A2[[i]]$t2 %>% 
     dplyr::arrange(country) %>% 
     knitr::kable() %>% print()
-  list_graphs[[i]]$p2 %>% print()
+  list_graphs_A2[[i]]$p2 %>% print()
   cat('\\newpage')
 }
 
@@ -269,17 +280,17 @@ trust_sources <-
     "Family members"
     )
 
-list_graphs <- lapply(1:10, function(x) {
+list_graphs_B2 <- lapply(1:10, function(x) {
   TrustGraphs(var = trust_vars[[x]], var_label = trust_sources[x])
 })
 
-for(i in 1:length(list_graphs)) {
-  list_graphs[[i]]$t1 %>% knitr::kable() %>% print()
-  list_graphs[[i]]$p1 %>% print()
-  list_graphs[[i]]$t2 %>% 
+for(i in 1:length(list_graphs_B2)) {
+  list_graphs_B2[[i]]$t1 %>% knitr::kable() %>% print()
+  list_graphs_B2[[i]]$p1 %>% print()
+  list_graphs_B2[[i]]$t2 %>% 
     dplyr::arrange(country) %>% 
     knitr::kable() %>% print()
-  list_graphs[[i]]$p2 %>% print()
+  list_graphs_B2[[i]]$p2 %>% print()
   cat('\\newpage')
 }
 
@@ -303,17 +314,17 @@ trust_sources <-
     "International organisations (e.g. the UN or WHO)"
     )
 
-list_graphs <- lapply(1:3, function(x) {
+list_graphs_B1 <- lapply(1:3, function(x) {
   TrustGraphs(var = trust_vars[[x]], var_label = trust_sources[x])
 })
 
-for(i in 1:length(list_graphs)) {
-  list_graphs[[i]]$t1 %>% knitr::kable() %>% print()
-  list_graphs[[i]]$p1 %>% print()
-  list_graphs[[i]]$t2 %>% 
+for(i in 1:length(list_graphs_B1)) {
+  list_graphs_B1[[i]]$t1 %>% knitr::kable() %>% print()
+  list_graphs_B1[[i]]$p1 %>% print()
+  list_graphs_B1[[i]]$t2 %>% 
     dplyr::arrange(country) %>% 
     knitr::kable() %>% print()
-  list_graphs[[i]]$p2 %>% print()
+  list_graphs_B1[[i]]$p2 %>% print()
   cat('\\newpage')
 }
 
@@ -455,6 +466,9 @@ for (i in 1:4) {
 
 # Printing top 10 differences for each country
 ```{r}
+rm(highest_discrep_countries)
+highest_discrep_countries <- list()
+
 
 for (i in 1:13) {
   # Construct object name dynamically
@@ -462,19 +476,25 @@ for (i in 1:13) {
   
   # Retrieve the object using get()
   retrieved <- get(object_name) 
-
+  
+  top_5_countries <- retrieved[1:5, 1] 
+  highest_discrep_countries[[paste0("a1_", i)]] <- top_5_countries
+  
   # Print the formatted table
   print(object_name)
-  print(knitr::kable(retrieved[1:10, ]))
+  #print(knitr::kable(retrieved[1:10, ]))
 }
 
 for (i in 1:13) {
   object_name <- paste0("discrep_a2_", i)
   
   retrieved <- get(object_name) 
-
+  
+  top_5_countries <- retrieved[1:5, 1]
+  highest_discrep_countries[[paste0("a2_", i)]] <- top_5_countries
+  
   print(object_name)
-  print(knitr::kable(retrieved[1:10, ]))
+  #print(knitr::kable(retrieved[1:10, ]))
 }
 
 for (i in 1:2) {
@@ -482,8 +502,11 @@ for (i in 1:2) {
   
   retrieved <- get(object_name) 
 
+  top_5_countries <- retrieved[1:5, 1] 
+  highest_discrep_countries[[paste0("a3_", i)]] <- top_5_countries
+  
   print(object_name)
-  print(knitr::kable(retrieved[1:10, ]))
+  #print(knitr::kable(retrieved[1:10, ]))
 }
 
 for (i in 1:1) {
@@ -503,13 +526,89 @@ for (i in 1:5) {
   print(object_name)
   print(knitr::kable(retrieved[1:10, ]))
 }
+
+
+country_counts <- table(unlist(highest_discrep_countries)) %>% 
+  sort(decreasing = TRUE)
+
+
 ```
 
 
+## Looking at trust vs. mental health / loneliness during COVID
+To gauge trust vs mental health / loneliness, we first look to these important variables:
 
+A1 = "A1. Imagine there was an emerging crisis in your country that you were very concerned about and
+wanted to learn more about (for example, a flood, pandemic, or food/water shortages).
+How likely would you be to trust the following sources to give you the most accurate, truthful
+information?"
 
+B1 = "To what extent would you trust the following institutions to act in your best
+interest?"
 
+B2 = "To what extent would you trust the following people or groups of people to act in your best interest?"
 
+C1_1 = "I struggled with feelings of loneliness
+and isolation"
+
+C1_6 = "I experienced mental health problems
+e.g. anxiety, depression"
+
+For those who experienced loneliness or have the most severe mental health issues, 
+it would be helpful to understand who they are trusting,
+versus those who are experiencing the least loneliness
+```{r}
+
+# Create a variable to classify those with the most severe mental health issues to be TRUE or FALSE
+d <- d %>% 
+  dplyr::mutate(
+    severe_MH = (c1_1 == "Yes" & c1_6 == "Yes")
+  )
+
+knitr::kable(prop.table(table((d$severe_MH[d$youth == "Age 18-24"]))))
+prop.table(table((d$severe_MH[d$youth == "Age25+"])))
+knitr::kable(prop.table(table(d$a1_1[d$severe_MH == TRUE], useNA = "always")))
+
+# Who do the severe MH people trust?
+trust_sources <- 
+  c("National TV",
+    "Local TV",
+    "National Radio",
+    "Local Radio",
+    "International TV",
+    "International Radio",
+    "National Print Media",
+    "Local Print Media",
+    "Word of mouth",
+    "Govt Communication",
+    "Social Media",
+    "Internet",
+    "Messaging Platforms")
+for (i in 1:13) {
+  var_name <- paste0("a1_", i)
+  result <- table(d[[var_name]][d$severe_MH == TRUE], useNA = "always")
+  result_prop <- prop.table(table(d[[var_name]][d$severe_MH == TRUE], useNA = "always")) %>% 
+  knitr::kable(col.names = c(trust_sources[i], "Freq"))
+  
+  last_two <- sum(result[4:5])
+  combined <- c(result[1:3], last_two)
+  
+  # Create the dataframe and assign it to a variable named severe_MH_trust_[var_name]
+  temp_df <- data.frame(
+    result = c("Very likely", "Likely", "Unlikely", "Don't know/ Refused"),
+    frequency = combined,
+    proportion = combined / sum(combined)
+  )
+  
+  # Rename the 'result' column to the corresponding trust source
+  temp_df <- setNames(temp_df, c(trust_sources[i], "frequency", "proportion"))
+  
+  assign(paste0("severe_MH_trust_", var_name), temp_df)
+  
+  print(result_prop) 
+}
+
+```
 
 
 

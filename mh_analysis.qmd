@@ -7,7 +7,6 @@ editor: visual
 
 # Looking at Mental Health, Loneliness and Trust
 
-
 ```{r}
 #| echo: false
 
@@ -41,12 +40,7 @@ rm(data_haven)
 
 ```
 
-Aggregating to the country level there is a positive relationship between 
-loneliness and MH problems in all countries (first graph) and there appears
-to be a strong positive relationship between the level of MH problems and levels 
-of loneliness across countries. But there very large differences between 
-countries.  Vietnam has ~20% of young people having MH problems and loneliness,
-US, Ireland, Iraq and Chile have >60%.
+Aggregating to the country level there is a positive relationship between loneliness and MH problems in all countries (first graph) and there appears to be a strong positive relationship between the level of MH problems and levels of loneliness across countries. But there very large differences between countries. Vietnam has \~20% of young people having MH problems and loneliness, US, Ireland, Iraq and Chile have \>60%.
 
 ```{r}
 #| echo: false
@@ -97,13 +91,9 @@ d_young %>%
 
 Are effects within countries as strong as effects between countries?
 
-Logistic regression tells us the strength of the relationship between two
-variables.
+Logistic regression tells us the strength of the relationship between two variables.
 
-The first regression shows that the parameter estimate for the relationship
-between loneliness and mh is 1.55 (or = 4.72). Adjusting for country, the 
-relationship increases to 1.61 (OR 5.02), rather than decreases in strength - that is the 
-relationship is stronger within country than between countries.
+The first regression shows that the parameter estimate for the relationship between loneliness and mh is 1.55 (or = 4.72). Adjusting for country, the relationship increases to 1.61 (OR 5.02), rather than decreases in strength - that is the relationship is stronger within country than between countries.
 
 ```{r}
 #| echo: false
@@ -119,16 +109,11 @@ exp(fit_2$coefficients[[2]])
 
 ```
 
-
 Does the strength of relationship differ across countries?
 
 The analysis below shows that it does.
 
-The first analysis treats country as a random effect, with random intercepts.
-The intercepts have a variance - we know this. But the second analysis shows 
-that allowing the relationship between mental health and loneliness to vary
-across countries improves the model fit (by AIC and ANOVA) suggesting that the
-relationship between loneliness and MH varies in strength across countries.
+The first analysis treats country as a random effect, with random intercepts. The intercepts have a variance - we know this. But the second analysis shows that allowing the relationship between mental health and loneliness to vary across countries improves the model fit (by AIC and ANOVA) suggesting that the relationship between loneliness and MH varies in strength across countries.
 
 ```{r}
 
@@ -149,26 +134,61 @@ anova(fit_3, fit_4)
 
 ## Social Media Use
 
-Using facebook daily has a much stronger association with  feelings of 
-loneliness than it does with mental health problems.
+Using facebook daily has a much stronger association with feelings of loneliness than it does with mental health problems.
 
 ```{r}
 
-
-d_young <-
-  d_young %>% dplyr::mutate(
-    facebook_daily = i18_1 == "Every day",
-    facebook_daily = ifelse(i18_1 == "Don't know/ Refused", NA, facebook_daily)
+d_young <- d_young %>% 
+  dplyr::mutate( facebook_daily = i18_1 == "Every day", 
+                 facebook_daily = ifelse(
+                   i18_1 == "Don't know/ Refused", NA, facebook_daily) 
   )
 
-
-fit_5 <- lme4::glmer(
-  lonely ~ facebook_daily + (1 | country), data = d_young, family = "binomial"
-)
+fit_5 <- lme4::glmer( lonely ~ facebook_daily + (1 | country), 
+                      data = d_young, family = "binomial" )
 summary(fit_5)
 
-
-fit_6 <- lme4::glmer(
-  mh_problems ~ facebook_daily + (1 | country), data = d_young, family = "binomial"
-)
+fit_6 <- lme4::glmer( mh_problems ~ facebook_daily + (1 | country), 
+                      data = d_young, family = "binomial" ) 
 summary(fit_6)
+```
+
+
+## Social Media Use and Trust
+
+The amount of trust young people have in social media is not associated with MH 
+problems or loneliness, and the amount of trust was not found to moderate the 
+relationship between social media use and loneliness / mh problems 
+
+
+```{r}
+
+d_young <- d_young %>%
+  dplyr::mutate(
+    trust_sm = as.numeric(a1_11),
+    trust_sm = ifelse(trust_sm < 5, trust_sm, NA)
+  )
+
+fit_7 <- lme4::glmer(
+  lonely ~ facebook_daily + trust_sm + (1 | country), 
+                      data = d_young, family = "binomial" )
+summary(fit_7)
+
+
+fit_7a <- lme4::glmer(
+  lonely ~ facebook_daily * trust_sm + (1 | country), 
+                      data = d_young, family = "binomial" )
+summary(fit_7a)
+
+fit_8 <- lme4::glmer(
+  mh_problems ~ facebook_daily + trust_sm + (1 | country), 
+                      data = d_young, family = "binomial" )
+summary(fit_8)
+
+
+fit_8a <- lme4::glmer(
+  mh_problems ~ facebook_daily * trust_sm + (1 | country), 
+                      data = d_young, family = "binomial" )
+summary(fit_8a)
+
+```

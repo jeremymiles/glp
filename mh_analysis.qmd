@@ -1,0 +1,174 @@
+---
+title: "Untitled"
+author: "Alex Miles, Jeremy Miles"
+format: pdf
+editor: visual
+---
+
+# Looking at Mental Health, Loneliness and Trust
+
+
+```{r}
+#| echo: false
+
+library(dplyr)
+library(foreign)
+library(ggplot2)
+library(ggrepel)
+library(haven)
+library(locfit)
+
+# Download the .sav file from the URL
+url <- "https://github.com/jeremymiles/glp/blob/main/Global%20Listening%20Project%20-%20Final%20Data.sav?raw=true"
+download.file(url, destfile = "Global_Listening_Project_Final_Data.sav", mode = "wb")
+
+# Read the .sav file using haven
+# Want to use foreign, as it keeps factor labels. Foreign can't read from the url, unclear why. Fix is to load with haven, write sav file, and read that with foreign
+data_haven <- haven::read_sav("Global_Listening_Project_Final_Data.sav")
+
+# Save the data as a .sav file in a format compatible with foreign
+write_sav(data_haven, "Compatible_Final_Data.sav")
+
+# Now read the newly saved .sav file using foreign
+suppressWarnings({
+  orig_dat <- foreign::read.spss("Compatible_Final_Data.sav", 
+                          to.data.frame = TRUE) 
+})
+
+# Removing data_haven from R environment
+rm(data_haven)
+
+
+```
+
+Aggregating to the country level there is a positive relationship between 
+loneliness and MH problems in all countries (first graph) and there appears
+to be a strong positive relationship between the level of MH problems and levels 
+of loneliness across countries. But there very large differences between 
+countries.  Vietnam has ~20% of young people having MH problems and loneliness,
+US, Ireland, Iraq and Chile have >60%.
+
+```{r}
+#| echo: false
+
+
+d_young <- d %>%
+  dplyr::filter(age_group == "18-24 years old") %>%
+  dplyr::mutate(
+    lonely = ifelse(c1_1 == "Yes", TRUE, ifelse(
+      c1_1 == "No", FALSE, NA)),
+    mh_problems = ifelse(c1_6 == "Yes", TRUE, ifelse(
+      c1_6 == "No", FALSE, NA)),
+  )
+
+d_young %>%
+  dplyr::group_by(lonely, mh_problems) %>%
+  dplyr::filter(!is.na(mh_problems), !is.na(lonely)) %>%
+  dplyr::summarise(n = dplyr::n()) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(prop = n / sum(n))
+
+d_young %>%
+  dplyr::group_by(country, global_region) %>%
+  dplyr::summarise(
+    mh_problems_mean = mean(mh_problems, na.rm = TRUE),
+    lonely_mean = mean(lonely, na.rm = TRUE)
+  ) %>%
+  ggplot2::ggplot(
+    aes(x = mh_problems_mean, y = lonely_mean), color = global_region) + 
+  geom_point(aes(color = global_region)
+  )
+
+d_young %>%
+  dplyr::group_by(country, global_region) %>%
+  dplyr::summarise(
+    mh_problems_mean = mean(mh_problems, na.rm = TRUE),
+    lonely_mean = mean(lonely, na.rm = TRUE)
+  ) %>%
+  dplyr::ungroup() %>%
+  ggplot2::ggplot(
+    aes(x = mh_problems_mean, y = lonely_mean)) + 
+  geom_point() +
+  facet_wrap(~global_region) +
+  ggrepel::geom_label_repel(aes(label = country)) 
+
+
+```
+
+Are effects within countries as strong as effects between countries?
+
+Logistic regression tells us the strength of the relationship between two
+variables.
+
+The first regression shows that the parameter estimate for the relationship
+between loneliness and mh is 1.55 (or = 4.72). Adjusting for country, the 
+relationship increases to 1.61 (OR 5.02), rather than decreases in strength - that is the 
+relationship is stronger within country than between countries.
+
+```{r}
+#| echo: false
+
+fit_1 <- glm(lonely ~ mh_problems, data = d_young, family = "binomial")
+summary(fit_1)
+exp(fit_1$coefficients[[2]])
+
+fit_2 <- glm(lonely ~ mh_problems + country, 
+             data = d_young, family = "binomial")
+summary(fit_2)
+exp(fit_2$coefficients[[2]])
+
+```
+
+
+Does the strength of relationship differ across countries?
+
+The analysis below shows that it does.
+
+The first analysis treats country as a random effect, with random intercepts.
+The intercepts have a variance - we know this. But the second analysis shows 
+that allowing the relationship between mental health and loneliness to vary
+across countries improves the model fit (by AIC and ANOVA) suggesting that the
+relationship between loneliness and MH varies in strength across countries.
+
+```{r}
+
+fit_3 <- lme4::glmer(
+  lonely ~ mh_problems + (1 | country), data = d_young, family = "binomial"
+)
+summary(fit_3)
+AIC(fit_3)
+
+fit_4 <- lme4::glmer(
+  lonely ~ mh_problems + (mh_problems | country), data = d_young, family = "binomial"
+)
+summary(fit_4)
+AIC(fit_4)
+anova(fit_3, fit_4)
+
+```
+
+## Social Media Use
+
+Using facebook daily has a much stronger association with  feelings of 
+loneliness than it does with mental health problems.
+
+```{r}
+
+
+d_young <-
+  d_young %>% dplyr::mutate(
+    facebook_daily = i18_1 == "Every day",
+    facebook_daily = ifelse(i18_1 == "Don't know/ Refused", NA, facebook_daily)
+  )
+
+
+fit_5 <- lme4::glmer(
+  lonely ~ facebook_daily + (1 | country), data = d_young, family = "binomial"
+)
+summary(fit_5)
+
+
+fit_6 <- lme4::glmer(
+  mh_problems ~ facebook_daily + (1 | country), data = d_young, family = "binomial"
+)
+summary(fit_6)

@@ -7,7 +7,8 @@ editor: visual
 
 # Looking at Mental Health, Loneliness and Trust
 
-```{r}
+
+```{r setup}
 #| echo: false
 
 library(dplyr)
@@ -16,6 +17,13 @@ library(ggplot2)
 library(ggrepel)
 library(haven)
 library(locfit)
+
+```
+
+```{r}
+#| echo: false
+#| cache: true
+
 
 # Download the .sav file from the URL
 url <- "https://github.com/jeremymiles/glp/blob/main/Global%20Listening%20Project%20-%20Final%20Data.sav?raw=true"
@@ -31,7 +39,7 @@ write_sav(data_haven, "Compatible_Final_Data.sav")
 # Now read the newly saved .sav file using foreign
 suppressWarnings({
   orig_dat <- foreign::read.spss("Compatible_Final_Data.sav", 
-                          to.data.frame = TRUE) 
+                                 to.data.frame = TRUE) 
 })
 
 # Removing data_haven from R environment
@@ -46,6 +54,7 @@ Aggregating to the country level there is a positive relationship between loneli
 #| echo: false
 d <- orig_dat
 names(d) <- tolower(names(d)) 
+
 d <- d %>% dplyr::mutate(
   global_region = as.character(global_region),
   gender = as.character(gender),
@@ -156,9 +165,9 @@ d_young <-
 
 d_young <- d_young %>% 
   dplyr::mutate(snapchat_daily = i18_9 == "Every day",
-  snapchat_daily = ifelse(i18_9 == "Don't know/ Refused", NA,
-  snapchat_daily
-  ))
+                snapchat_daily = ifelse(i18_9 == "Don't know/ Refused", NA,
+                                        snapchat_daily
+                ))
 
 
 fit_5 <- lme4::glmer(
@@ -175,113 +184,92 @@ summary(fit_6)
 
 ## Interaction between social media and loneliness with mental health problems
 
+Lots of models aren't printed.
+
 Does the relationship between social media use (facebook) and loneliness vary depending on the presence of mental health problems?
 
-This first analysis confirms that those with MH problems are significantly more likely to experience loneliness than those without. We also find that the interaction between MH problems and daily Facebook use does not significantly affect loneliness. This suggests that daily Facebook users with MH problems do not experience significantly different levels of loneliness compared to non-daily Facebook users with MH problems.
+This first analysis confirms that those with MH problems are significantly more likely to experience loneliness than those without. We also find that the interaction between MH problems and daily Facebook use does not significantly predict loneliness. This shows that daily Facebook users with MH problems do not experience significantly different levels of loneliness compared to non-daily Facebook users with MH problems.
 
 And, are we right to assume that the association between daily facebook usage and loneliness do not vary significantly across countries? Our second analysis shows us that we are. The impact of daily facebook use on loneliness does not vary much between countries.
 
+This can all be seen in the graph below. In almost every country, people who
+report more loneliness report more MH problems (the effect is smallest in
+Nigeria), but this difference varies across country. The effect of Facebook
+use is relatively small and is not statistically significant. 
+
 ```{r}
+#| results='hide'
+d_young_clean <- d_young %>%
+  dplyr::filter(!is.na(mh_problems) & !is.na(facebook_daily) & !is.na(lonely))
+
+# Not enough countries for multilevel
 
 fit_7a <- glm(
-  lonely ~ mh_problems * facebook_daily, 
-  data = d_young,
+  mh_problems ~ country + lonely + facebook_daily, 
+  data = d_young_clean,
   family = "binomial"
 )
 summary(fit_7a)
 
-fit_7a_mh <- glm(
-  mh_problems ~ lonely * facebook_daily, 
-  data = d_young,
-  family = "binomial"
-)
-summary(fit_7a_mh)
-
-
-fit_7b <- lme4::glmer(
-  lonely ~ mh_problems * facebook_daily + (facebook_daily | country), 
-  data = d_young,
+fit_7b <- glm(
+  mh_problems ~ country + lonely * facebook_daily, 
+  data = d_young_clean,
   family = "binomial"
 )
 summary(fit_7b)
 
-fit_7b_mh <- lme4::glmer(
-  mh_problems ~ lonely * facebook_daily + (facebook_daily | country), 
-  data = d_young,
+# C is the interesting / sig one
+fit_7c <- glm(
+  mh_problems ~ country * lonely + facebook_daily, 
+  data = d_young_clean,
   family = "binomial"
 )
-summary(fit_7b_mh)
-AIC(fit_7a, fit_7b)
+summary(fit_7c)
 
+fit_7d <- glm(
+  mh_problems ~ country * facebook_daily + lonely , 
+  data = d_young_clean,
+  family = "binomial"
+)
+summary(fit_7d)
+
+fit_7e <- glm(
+  mh_problems ~ country * facebook_daily * lonely , 
+  data = d_young_clean,
+  family = "binomial"
+)
+summary(fit_7e)
+
+
+
+anova(fit_7a, fit_7b, test = "LRT")
+anova(fit_7a, fit_7c, test = "LRT")
+anova(fit_7a, fit_7d, test = "LRT")
+
+anova(fit_7c, fit_7e, test = "LRT")
 
 ```
 
 ## Visualizing Loneliness, Mental Health Problems, and their Interaction across countries
 
 ```{r}
-d_young_clean <- d_young %>%
-  dplyr::filter(!is.na(mh_problems) & !is.na(facebook_daily) & !is.na(lonely))
-
-predicted_lonely_a <- predict(fit_7a, type = "response")
-predicted_lonely_b <- predict(fit_7b, type = "response")
-
-predicted_mh_a <- predict(fit_7a_mh, type = "response")
-predicted_mh_b <- predict(fit_7b_mh, type = "response")
 
 
 
-ggplot(d_young_clean, aes(x = lonely, 
-                          y = predicted_mh_b, 
-                          color = country, group = country)) +
-  geom_line(alpha = 0.8) +
+d_young_clean$predicted_mh <- predict(fit_7e, type = "response")
+
+d_young_clean_short <- d_young_clean %>%
+  dplyr::select(lonely, predicted_mh, country, facebook_daily) %>%
+  dplyr::distinct()
+
+
+ggplot(d_young_clean_short, 
+       aes(x = lonely, 
+           y = predicted_mh, 
+           color = facebook_daily, group = facebook_daily)) +
+  geom_line() +
   geom_point(alpha = 0.5) +
-  labs(
-    title = "Mental Health Problems + Facebook use and Loneliness",
-    x = "Loneliness",
-    y = "Predicted Probability of MH",
-    color = "Daily Facebook Usage"
-  )
-
-ggplot(d_young_clean, aes(x = lonely, 
-                          y = predicted_mh_a, 
-                          color = facebook_daily, group = facebook_daily)) +
-  geom_line(alpha = 0.8) +
-  geom_point(alpha = 0.5) +
-  labs(
-    title = "Mental Health Problems + Facebook use and Loneliness",
-    x = "Loneliness",
-    y = "Predicted Probability of MH",
-    color = "Daily Facebook Usage"
-  )
-
-
-
-ggplot(d_young_clean, aes(x = mh_problems, 
-                          y = predicted_lonely_a, 
-                          color = facebook_daily, group = facebook_daily)) +
-  geom_line(alpha = 0.8) +
-  geom_point(alpha = 0.5) +
-  labs(
-    title = "Mental Health Problems + Facebook use and Loneliness",
-    x = "Mental Health Problems (0 = No, 1 = Yes)",
-    y = "Predicted Probability of Loneliness",
-    color = "Daily Facebook Usage"
-  )
-
-ggplot(d_young_clean, aes(x = mh_problems, 
-                          y = predicted_lonely_b, 
-                          color = country, group = country)) +
-  geom_line(alpha = 0.8) +
-  geom_point(alpha = 0.5) +
-  labs(
-    title = "Mental Health Problems and Loneliness Across Countries 
-    with Random Effects for Daily Facebook Use",
-    x = "Mental Health Problems",
-    y = "Predicted Probability of Loneliness",
-    color = "Country"
-  )
-
-
+  facet_wrap(~country)  
 
 
 
@@ -289,37 +277,3 @@ ggplot(d_young_clean, aes(x = mh_problems,
 
 ```
 
-The first graph allows us to visualize the strong correlation between mental 
-health problems and loneliness, as indicated by the steep slope. We also 
-visualize that daily facebook usage on its own is not a very good predictor of 
-loneliness, as those reporting daily facebook usage only have a marginally 
-higher predicted probability of loneliness. Finally, this graph allows us to 
-visualize a lack of interaction effect between MH problems and loneliness. 
-Because the lines are relatively parallel, it shows that the relationship 
-between facebook use and loneliness does not vary depending on the 
-presence of MH problems.
-
-The second graph gives us more visualization for within countries. 
-While hard to see, there are 22 points for each MH outcome. The 11 countries 
-for facebook usage being false, and the same 11 for when it is true. 
-Because the lines are relatively parallel, this graph shows us that even 
-within countries, daily facebook use does not cause an interaction effect 
-on MH problems and loneliness.
-
-
-```{r}
-
-ggplot(d_young_clean, aes(x = facebook_daily, 
-                          y = predicted_mh_a, 
-                          color = facebook_daily, group = facebook_daily)) +
-  geom_line(alpha = 0.8) +
-  geom_point(alpha = 0.5) +
-  labs(
-    title = "Mental Health Problems + Facebook use and Loneliness",
-    x = "Loneliness",
-    y = "Predicted Probability of MH",
-    color = "Daily Facebook Usage"
-  )
-
-
-```

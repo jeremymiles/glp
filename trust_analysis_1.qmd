@@ -1,0 +1,377 @@
+---
+title: "Mental Health Analysis"
+author: "Alex Miles, Jeremy Miles"
+format: pdf
+editor: visual
+---
+
+# Looking at Mental Health and Trust
+
+```{r setup}
+#| echo: false
+
+library(dplyr)
+library(foreign)
+library(ggplot2)
+library(ggrepel)
+library(haven)
+library(locfit)
+
+```
+
+```{r fig.height=20,fig.width=15}
+#| echo: false
+#| cache: true
+
+
+# Download the .sav file from the URL
+url <- "https://github.com/jeremymiles/glp/blob/main/Global%20Listening%20Project%20-%20Final%20Data.sav?raw=true"
+download.file(url, destfile = "Global_Listening_Project_Final_Data.sav", mode = "wb")
+
+# Read the .sav file using haven
+# Want to use foreign, as it keeps factor labels. Foreign can't read from the url, unclear why. Fix is to load with haven, write sav file, and read that with foreign
+data_haven <- haven::read_sav("Global_Listening_Project_Final_Data.sav")
+
+# Save the data as a .sav file in a format compatible with foreign
+haven::write_sav(data_haven, "Compatible_Final_Data.sav")
+
+# Now read the newly saved .sav file using foreign
+suppressWarnings({
+  orig_dat <- foreign::read.spss("Compatible_Final_Data.sav", 
+                                 to.data.frame = TRUE) 
+})
+
+# Removing data_haven from R environment
+rm(data_haven)
+
+
+names(orig_dat) <- tolower(names(orig_dat))
+
+```
+
+
+
+```{r fig.height=20,fig.width=15}
+
+
+# rename the trust variables
+
+d <- orig_dat %>%
+  # ggplot uses alphabetical order, so a number at the 
+  # front keeps the order
+  dplyr::rename(
+    ` 1. national_tv_media` = a1_1,
+    ` 2. local_tv_media` = a1_2,
+    ` 3. trust_media_national_radio_media` = a1_3,
+    ` 4. local_radio_media` = a1_4,
+    ` 5. international_tv_media` = a1_5,
+    ` 6. international_radio_media` = a1_6,
+    ` 7. national_print_media` = a1_7,
+    ` 8. local_print_media` = a1_8,
+    ` 9. word_of_mouth_media` = a1_9,
+    `10. govt_comms_media` = a1_10,
+    `11. social_media_media` = a1_11,
+    `12. internet_media` = a1_12,
+    `13. messaging_media` = a1_13,
+    mh_problems = c1_6
+  ) %>%
+  dplyr::mutate_at(
+    vars(ends_with("media")), as.numeric
+  )
+```
+
+# Trust in Media: all age groups, by MH Problems
+
+MH problems associated with slightly lower trust levels
+```{r fig.height=20,fig.width=15}
+d_long <- d %>%
+  dplyr::filter(mh_problems != "Don't know/ Refused") %>%
+  dplyr::select(
+    age_group, global_region, country, mh_problems,
+    ends_with("media")
+  ) %>%
+  tidyr::pivot_longer(
+    cols = ends_with("media"),
+    values_to = "trust_level",
+    names_to = "media"
+  ) %>%
+  dplyr::filter(
+    trust_level != 5    ## Don't know / refused has become 5, so remove
+  )
+
+
+d_long %>%
+  dplyr::group_by(
+    mh_problems, media
+  ) %>%
+  dplyr::summarise(
+    mean_trust_level = mean(trust_level)
+  ) %>%
+  ggplot2::ggplot(
+    aes(x = media, y = mean_trust_level, group = mh_problems, color = mh_problems)
+  ) + 
+  geom_line() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    text=element_text(size=25)
+    ) +
+  ylim(1, 4)
+
+```
+
+# Trust in media by country
+Hard to see,  but there are a lot of between country differences, however there
+appear to be some consistent patterns. Word of mouth tends to be high, social 
+media tend to be low.
+
+```{r fig.height=20,fig.width=15}
+
+
+d_long <- d %>%
+  dplyr::filter(mh_problems != "Don't know/ Refused") %>%
+  dplyr::select(
+    age_group, global_region, country, mh_problems,
+    ends_with("media")
+  ) %>%
+  tidyr::pivot_longer(
+    cols = ends_with("media"),
+    values_to = "trust_level",
+    names_to = "media"
+  ) %>%
+  dplyr::filter(
+    trust_level != 5    ## Don't know / refused has become 5, so remove
+  ) %>%
+  dplyr::group_by(country) %>%
+  dplyr::group_by(
+    country
+  ) %>%
+  dplyr::mutate(
+    mean_trust_level = mean(trust_level)
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(mean_trust_residualized = trust_level - mean_trust_level )
+
+
+
+
+d_long  %>%
+  dplyr::group_by(country) %>%
+  dplyr::summarise(mean_trust_level = mean(trust_level )) %>%
+  ggplot2::ggplot(
+    aes(x = country, y = mean_trust_level)
+  ) + 
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  ggtitle("Mean Trust of all media across country") +
+  coord_flip(ylim = c(1, 4)) +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    text = element_text(size=20)
+  )
+
+
+d_long %>%
+  dplyr::group_by(
+    country, media
+  ) %>%
+  dplyr::summarise(
+    mean_trust_level = mean(trust_level)
+  ) %>%
+  ggplot2::ggplot(
+    aes(x = media, y = mean_trust_level, group = country, color = country)
+  ) + 
+  geom_line() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    legend.position = "none",
+    text = element_text(size=20)
+  ) +
+  ggtitle(
+    "Trust of media across all countries"
+  )
+
+
+
+d_long %>%
+  dplyr::group_by(
+    country, media
+  ) %>%
+  dplyr::summarise(
+    mean_trust_level = mean(trust_level)
+  ) %>%
+  ggplot2::ggplot(
+    aes(x = media, y = mean_trust_level, group = country)
+  ) + 
+  geom_line() +
+ theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    legend.position = "none",
+    text = element_text(size=20)
+  ) +
+  ylim(1, 4) +
+  facet_wrap(~country) +
+  ggtitle(
+    "Trust of media across all countries"
+  )
+
+
+```
+
+# Look at within country variation from the average
+Different countries have different baseline levels of trust (as seen above).
+We residualize trust by subtracting the mean of all trust scores for a country
+from the trust score.
+
+This removes a large amount of noise from the graph, and the patterns become 
+clearer.
+
+```{r fig.height=20,fig.width=15}
+
+d_long %>%
+  dplyr::group_by(
+    country, media
+  ) %>%
+  dplyr::summarise(
+    mean_trust_level = mean(mean_trust_residualized)
+  ) %>%
+  ggplot2::ggplot(
+    aes(x = media, y = mean_trust_level, group = country, color = country)
+  ) + 
+  geom_line() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    legend.position = "none",
+    text = element_text(size=20)
+  ) +
+  ggtitle(
+    "Residualized Trust of media across all countries (mean = 0 for all countries)"
+  )
+
+
+
+```
+# Mental Health Problems and trust by country
+Using residualized trust scores, we can see that there is a consistent pattern
+that people who report mental health problems also report lower trust (and
+because we residualized on country we know that this is not a between country 
+effect.)
+```{r fig.height=20,fig.width=15}
+
+d_long %>%
+  dplyr::group_by(
+    country, media, mh_problems
+  ) %>%
+  dplyr::summarise(
+    mean_trust_level = mean(mean_trust_residualized)
+  ) %>%
+  ggplot2::ggplot(
+    aes(x = media, y = mean_trust_level, group = country, color = country)
+  ) + 
+  geom_line() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    legend.position = "none",
+    text = element_text(size=20)
+  ) +
+  ggtitle(
+    "Residualized Trust of media across all countries (mean = 0 for all countries)"
+  ) +
+  facet_grid(. ~ mh_problems)
+
+
+
+```
+
+# Age and Trust
+
+Younger people tend to be the least trusting of some media (International TV, 
+International radio, national print media, govt communication, social media, 
+internet, messaging apps) but the most trusting of local radio and word of 
+mouth.
+
+```{r fig.height=20,fig.width=15}
+
+d_long %>%
+  dplyr::filter(age_group != "Don't know/ Prefer not to say") %>%
+  dplyr::group_by(
+    age_group, media
+  ) %>%
+  dplyr::summarise(
+    mean_trust_level = mean(trust_level)
+  ) %>%
+  ggplot2::ggplot(
+    aes(x = media, y = mean_trust_level, group = age_group, color = age_group)
+  ) + 
+  geom_line(aes(linetype = age_group)) +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    text = element_text(size=20)
+  ) +
+  ggtitle(
+    "Trust in different media across age groups"
+  )
+
+
+
+```
+
+
+# Age and Trust and Mental Health Problems
+(This uses trust levels adjusted for countries, because of the differences in 
+mental health reporting across countries.)
+The differences in levels of trust between those who report mental health 
+problems and those who do not appears to be smaller for the 18-24 year olds than for the other age groups (although these differences are not large for any age groups).  The
+oldest age group (55+) with mental health problems appear to have slightly 
+_more_ trust in some media than those without.
+
+(There are two versions of this chart - one flipped sideways, one not, I wasn't sure which was better.)
+
+```{r fig.height=20,fig.width=15}
+
+d_long %>%
+  dplyr::filter(age_group != "Don't know/ Prefer not to say") %>%
+  dplyr::group_by(
+    age_group, media, mh_problems
+  ) %>%
+  dplyr::summarise(
+    mean_trust_level = mean(mean_trust_residualized)
+  ) %>%
+  ggplot2::ggplot(
+    aes(
+      x = media, y = mean_trust_level, group = mh_problems, color = mh_problems
+    )
+  ) + 
+  geom_line(aes(linetype = mh_problems)) +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    text = element_text(size=20)
+  ) +
+  ggtitle(
+    "Trust in different media across age groups by mental health"
+  ) +
+  facet_grid(. ~ age_group) + coord_flip()
+
+d_long %>%
+  dplyr::filter(age_group != "Don't know/ Prefer not to say") %>%
+  dplyr::group_by(
+    age_group, media, mh_problems
+  ) %>%
+  dplyr::summarise(
+    mean_trust_level = mean(mean_trust_residualized)
+  ) %>%
+  ggplot2::ggplot(
+    aes(
+      x = media, y = mean_trust_level, group = mh_problems, color = mh_problems
+    )
+  ) + 
+  geom_line(aes(linetype = mh_problems)) +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    text = element_text(size=20)
+  ) +
+  ggtitle(
+    "Trust in different media across age groups by mental health"
+  ) +
+  facet_grid(. ~ age_group) 
+
+```

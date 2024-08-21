@@ -1,0 +1,210 @@
+---
+title: "Mental Health Analysis"
+author: "Alex Miles, Jeremy Miles"
+format: pdf
+editor: visual
+---
+
+# Looking at Mental, Trust, Optimism and Age
+
+From doc: We can test for a significant difference in the strength of the relationship between mh and trust/optimism across age groups.
+
+
+
+
+
+```{r setup}
+#| echo: false
+
+library(dplyr)
+library(foreign)
+library(ggplot2)
+library(ggrepel)
+library(haven)
+library(locfit)
+
+```
+
+```{r fig.height=20,fig.width=15}
+#| echo: false
+#| cache: true
+
+
+# Download the .sav file from the URL if the file does not exist.
+if (!file.exists("Global_Listening_Project_Final_Data.sav")) {
+  url <- glue::glue("https://github.com/jeremymiles/glp/blob",
+                    "/main/Global%20Listening%20Project%20-", 
+                    "%20Final%20Data.sav?raw=true")
+  download.file(
+    url, 
+    destfile = "Global_Listening_Project_Final_Data.sav", mode = "wb")
+  
+  data_haven <- haven::read_sav("Global_Listening_Project_Final_Data.sav")
+  
+  # Save the data as a .sav file in a format compatible with foreign
+  haven::write_sav(data_haven, "Compatible_Final_Data.sav")
+  
+}
+# Read the .sav file using haven
+# Want to use foreign, as it keeps factor labels. Foreign can't read from the 
+# url, unclear why. Fix is to load with haven, write sav file, and read
+# that with foreign
+
+
+# Now read the  saved .sav file using foreign
+suppressWarnings({
+  orig_dat <- foreign::read.spss("Compatible_Final_Data.sav", 
+                                 to.data.frame = TRUE) 
+})
+
+# Removing data_haven from R environment
+rm(data_haven)
+
+
+names(orig_dat) <- tolower(names(orig_dat))
+
+```
+
+
+
+```{r fig.height=20,fig.width=15}
+
+
+# rename the trust variables
+
+d <- orig_dat %>%
+  # ggplot uses alphabetical order, so a number at the 
+  # front keeps the order
+  dplyr::rename(
+    ` 1. national_tv_media` = a1_1,
+    ` 2. local_tv_media` = a1_2,
+    ` 3. trust_media_national_radio_media` = a1_3,
+    ` 4. local_radio_media` = a1_4,
+    ` 5. international_tv_media` = a1_5,
+    ` 6. international_radio_media` = a1_6,
+    ` 7. national_print_media` = a1_7,
+    ` 8. local_print_media` = a1_8,
+    ` 9. word_of_mouth_media` = a1_9,
+    `10. govt_comms_media` = a1_10,
+    `11. social_media_media` = a1_11,
+    `12. internet_media` = a1_12,
+    `13. messaging_media` = a1_13) %>%
+  dplyr::mutate(
+    mh_problems = ifelse(c1_6 == "Yes", TRUE, ifelse(
+      c1_6 == "No", FALSE, NA))
+  ) %>%
+  dplyr::mutate_at(
+    vars(ends_with("media")), as.numeric
+  )
+
+
+d <- d %>% dplyr::mutate(
+  global_region = as.character(global_region),
+  gender = as.character(gender),
+  gender = ifelse(gender %in% c("Male", "Female"), gender, NA),
+  youth = age_group == "18-24 years old",
+  youth = ifelse(youth, "Age 18-24", "Age25+"),
+  Region = as.character(region), 
+  country = as.character(country),
+  age_group = as.character(age_group),
+  age_group = ifelse(age_group == "Don't know/ Prefer not to say", NA, age_group))
+
+```
+
+# Results
+
+Lots of output below. I will try to summarise.
+
+##1. National TV 
+
+35-44 have higher trust than 18-25, 45-54 and 55+ have lower trust than 18-25.
+MH problems are associated with lower trust (by 0.025 points on a 1-4 scale, so 
+not very much).
+
+The effect of MH problems on trust does not vary across age groups.
+
+## 2. local_tv_media
+45-54 and 55+ have lower trust than 18-25.
+
+There is a change in the relationship across age, which appears to be driven by
+55+ with MH  problems having higher trust than those without, which is the 
+reverse of other age groups.
+
+## 3. national_radio_media
+
+35-44, 45-54 and 55+ have lower trust than youth.
+MH problems not associated with trust (controlling for age group)
+No variation in MH effect across age detected.
+
+## 4. local_radio_media
+
+All age groups have lower trust than youth.
+
+MH problem effect does not vary.
+
+
+```{r}
+
+vars <- d %>% 
+  select(ends_with("media")) %>% 
+  names() 
+
+
+for (outcome_var in vars) {
+  
+  cat("Current outcome variable: ", outcome_var, "\n")
+  
+  d$outcome_var <- d[[outcome_var]]
+  
+  fit_1 <- lme4::lmer(outcome_var ~ (1|country), data = d, REML = FALSE)
+  fit_2 <- lme4::lmer(outcome_var ~ age_group + (1|country), data = d, 
+                      REML = FALSE)
+  summary(fit_2) %>% print()
+  fit_3 <- lme4::lmer(
+    outcome_var ~ mh_problems + age_group + (1|country), data = d, REML = FALSE
+  )
+  summary(fit_3) %>% print()
+  
+  fit_3a <- lme4::lmer(
+    outcome_var ~ mh_problems + age_group + (age_group|country), data = d, 
+    REML = FALSE
+  )
+  summary(fit_3a) %>% print()
+  
+  anova(fit_3, fit_3a, test = "LRT")
+  
+  
+  fit_4 <- lme4::lmer(
+    outcome_var ~ mh_problems * age_group + (1|country), data = d, 
+    REML = FALSE
+  )
+  summary(fit_4) %>% print()
+  anova(fit_3, fit_4, test = "LRT") %>% print()
+  
+  fit_4a <- lme4::lmer(
+    outcome_var ~ mh_problems * age_group + (age_group|country), data = d, 
+    REML = FALSE
+  )
+  summary(fit_4a) %>% print()
+  anova(fit_3a, fit_4a, test = "LRT") %>% print()
+  
+  
+  d_grouped <- d%>% 
+    dplyr::filter(!is.na(mh_problems), !is.na(age_group)) %>%
+    dplyr::group_by(country) %>%
+    dplyr::mutate(outcome_var_mean = mean(outcome_var, na.rm = TRUE)) %>%
+    dplyr::mutate(outcome_var_centered = outcome_var - outcome_var_mean) %>%
+    dplyr::group_by(age_group, mh_problems) %>%
+    dplyr::summarise(outcome_var = mean(outcome_var_centered))
+  
+  p <- d_grouped %>% 
+    ggplot2::ggplot(
+      aes(x = age_group, y = outcome_var, group = mh_problems, color = mh_problems)
+    ) + 
+    geom_line() +
+    ggtitle(outcome_var)  
+  print(p)
+}
+
+
+```

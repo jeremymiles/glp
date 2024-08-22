@@ -1,7 +1,7 @@
 ---
 title: "Mental Health Analysis"
 author: "Alex Miles, Jeremy Miles"
-format: pdf
+format: html
 editor: visual
 ---
 

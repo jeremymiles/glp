@@ -1,0 +1,3952 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alex Miles, Jeremy Miles">
+
+<title>Mental Health Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="trust_analysis_2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="trust_analysis_2_files/libs/quarto-html/quarto.js"></script>
+<script src="trust_analysis_2_files/libs/quarto-html/popper.min.js"></script>
+<script src="trust_analysis_2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="trust_analysis_2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="trust_analysis_2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="trust_analysis_2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="trust_analysis_2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="trust_analysis_2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="trust_analysis_2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Mental Health Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Alex Miles, Jeremy Miles </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="looking-at-mental-trust-optimism-and-age" class="level1">
+<h1>Looking at Mental, Trust, Optimism and Age</h1>
+<p>From doc: We can test for a significant difference in the strength of the relationship between mh and trust/optimism across age groups.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggplot2' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggrepel' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'haven' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'locfit' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>locfit 1.5-9.10      2024-06-24</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in rm(data_haven): object 'data_haven' not found</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rename the trust variables</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> orig_dat <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ggplot uses alphabetical order, so a number at the </span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># front keeps the order</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at"> 1. national_tv_media</span><span class="st">`</span> <span class="ot">=</span> a1_1,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at"> 2. local_tv_media</span><span class="st">`</span> <span class="ot">=</span> a1_2,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at"> 3. trust_media_national_radio_media</span><span class="st">`</span> <span class="ot">=</span> a1_3,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at"> 4. local_radio_media</span><span class="st">`</span> <span class="ot">=</span> a1_4,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at"> 5. international_tv_media</span><span class="st">`</span> <span class="ot">=</span> a1_5,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at"> 6. international_radio_media</span><span class="st">`</span> <span class="ot">=</span> a1_6,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at"> 7. national_print_media</span><span class="st">`</span> <span class="ot">=</span> a1_7,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at"> 8. local_print_media</span><span class="st">`</span> <span class="ot">=</span> a1_8,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at"> 9. word_of_mouth_media</span><span class="st">`</span> <span class="ot">=</span> a1_9,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">10. govt_comms_media</span><span class="st">`</span> <span class="ot">=</span> a1_10,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">11. social_media_media</span><span class="st">`</span> <span class="ot">=</span> a1_11,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">12. internet_media</span><span class="st">`</span> <span class="ot">=</span> a1_12,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">13. messaging_media</span><span class="st">`</span> <span class="ot">=</span> a1_13) <span class="sc">%&gt;%</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">mh_problems =</span> <span class="fu">ifelse</span>(c1_6 <span class="sc">==</span> <span class="st">"Yes"</span>, <span class="cn">TRUE</span>, <span class="fu">ifelse</span>(</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>      c1_6 <span class="sc">==</span> <span class="st">"No"</span>, <span class="cn">FALSE</span>, <span class="cn">NA</span>))</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate_at</span>(</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">vars</span>(<span class="fu">ends_with</span>(<span class="st">"media"</span>)), as.numeric</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> d <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">global_region =</span> <span class="fu">as.character</span>(global_region),</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender =</span> <span class="fu">as.character</span>(gender),</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender =</span> <span class="fu">ifelse</span>(gender <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>), gender, <span class="cn">NA</span>),</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">youth =</span> age_group <span class="sc">==</span> <span class="st">"18-24 years old"</span>,</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">youth =</span> <span class="fu">ifelse</span>(youth, <span class="st">"Age 18-24"</span>, <span class="st">"Age25+"</span>),</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">Region =</span> <span class="fu">as.character</span>(region), </span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">country =</span> <span class="fu">as.character</span>(country),</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_group =</span> <span class="fu">as.character</span>(age_group),</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_group =</span> <span class="fu">ifelse</span>(age_group <span class="sc">==</span> <span class="st">"Don't know/ Prefer not to say"</span>, <span class="cn">NA</span>, age_group))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+<p>Lots of output below. I will try to summarise.</p>
+<p>##1. National TV</p>
+<p>35-44 have higher trust than 18-25, 45-54 and 55+ have lower trust than 18-25. MH problems are associated with lower trust (by 0.025 points on a 1-4 scale, so not very much).</p>
+<p>The effect of MH problems on trust does not vary across age groups.</p>
+<section id="local_tv_media" class="level2">
+<h2 class="anchored" data-anchor-id="local_tv_media">2. local_tv_media</h2>
+<p>45-54 and 55+ have lower trust than 18-25.</p>
+<p>There is a change in the relationship across age, which appears to be driven by 55+ with MH problems having higher trust than those without, which is the reverse of other age groups.</p>
+</section>
+<section id="national_radio_media" class="level2">
+<h2 class="anchored" data-anchor-id="national_radio_media">3. national_radio_media</h2>
+<p>35-44, 45-54 and 55+ have lower trust than youth. MH problems not associated with trust (controlling for age group) No variation in MH effect across age detected.</p>
+</section>
+<section id="local_radio_media" class="level2">
+<h2 class="anchored" data-anchor-id="local_radio_media">4. local_radio_media</h2>
+<p>All age groups have lower trust than youth.</p>
+<p>MH problem effect does not vary.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> d <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"media"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>() </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (outcome_var <span class="cf">in</span> vars) {</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Current outcome variable: "</span>, outcome_var, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  d<span class="sc">$</span>outcome_var <span class="ot">&lt;-</span> d[[outcome_var]]</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  fit_1 <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">lmer</span>(outcome_var <span class="sc">~</span> (<span class="dv">1</span><span class="sc">|</span>country), <span class="at">data =</span> d, <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  fit_2 <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">lmer</span>(outcome_var <span class="sc">~</span> age_group <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>country), <span class="at">data =</span> d, </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                      <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>(fit_2) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  fit_3 <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">lmer</span>(</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    outcome_var <span class="sc">~</span> mh_problems <span class="sc">+</span> age_group <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>country), <span class="at">data =</span> d, <span class="at">REML =</span> <span class="cn">FALSE</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>(fit_3) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  fit_3a <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">lmer</span>(</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    outcome_var <span class="sc">~</span> mh_problems <span class="sc">+</span> age_group <span class="sc">+</span> (age_group<span class="sc">|</span>country), <span class="at">data =</span> d, </span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">REML =</span> <span class="cn">FALSE</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>(fit_3a) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anova</span>(fit_3, fit_3a, <span class="at">test =</span> <span class="st">"LRT"</span>)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>  fit_4 <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">lmer</span>(</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    outcome_var <span class="sc">~</span> mh_problems <span class="sc">*</span> age_group <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>country), <span class="at">data =</span> d, </span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">REML =</span> <span class="cn">FALSE</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>(fit_4) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anova</span>(fit_3, fit_4, <span class="at">test =</span> <span class="st">"LRT"</span>) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>  fit_4a <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">lmer</span>(</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>    outcome_var <span class="sc">~</span> mh_problems <span class="sc">*</span> age_group <span class="sc">+</span> (age_group<span class="sc">|</span>country), <span class="at">data =</span> d, </span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">REML =</span> <span class="cn">FALSE</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>(fit_4a) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anova</span>(fit_3a, fit_4a, <span class="at">test =</span> <span class="st">"LRT"</span>) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>  d_grouped <span class="ot">&lt;-</span> d<span class="sc">%&gt;%</span> </span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(mh_problems), <span class="sc">!</span><span class="fu">is.na</span>(age_group)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(country) <span class="sc">%&gt;%</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">outcome_var_mean =</span> <span class="fu">mean</span>(outcome_var, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">outcome_var_centered =</span> outcome_var <span class="sc">-</span> outcome_var_mean) <span class="sc">%&gt;%</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(age_group, mh_problems) <span class="sc">%&gt;%</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">outcome_var =</span> <span class="fu">mean</span>(outcome_var_centered))</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> d_grouped <span class="sc">%&gt;%</span> </span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>      <span class="fu">aes</span>(<span class="at">x =</span> age_group, <span class="at">y =</span> outcome_var, <span class="at">group =</span> mh_problems, <span class="at">color =</span> mh_problems)</span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(outcome_var)  </span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p)</span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:   1. national_tv_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 203448.1  203512.3 -101717.0  203434.1     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.6965 -0.8086 -0.1111  0.3288  3.3846 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.05638  0.2374  
+ Residual             1.03693  1.0183  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.07063    0.03004  68.933
+age_group25-34 years old  0.02331    0.01265   1.842
+age_group35-44 years old  0.02674    0.01317   2.031
+age_group45-54 years old -0.03610    0.01401  -2.577
+age_group55+ years       -0.08393    0.01281  -6.554
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.247                     
+ag_g35-44yo -0.244  0.566              
+ag_g45-54yo -0.235  0.535  0.534       
+ag_grp55+yr -0.263  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+193647.9 193720.9 -96815.9 193631.9    68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.7190 -0.8164 -0.0917  0.3308  3.4588 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.05629  0.2373  
+ Residual             0.99988  0.9999  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.052944   0.030224  67.924
+mh_problemsTRUE          -0.024831   0.008574  -2.896
+age_group25-34 years old  0.023284   0.012693   1.834
+age_group35-44 years old  0.026644   0.013224   2.015
+age_group45-54 years old -0.024295   0.014076  -1.726
+age_group55+ years       -0.068625   0.012938  -5.304
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.110                            
+ag_g25-34yo -0.249  0.013                     
+ag_g35-44yo -0.248  0.034  0.568              
+ag_g45-54yo -0.241  0.051  0.537  0.537       
+ag_grp55+yr -0.275  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+193360.5 193561.3 -96658.2 193316.5    68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.7190 -0.7921 -0.0966  0.3428  3.4751 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev. Corr                   
+ country  (Intercept)              6.184e-02 0.248681                        
+          age_group25-34 years old 5.576e-05 0.007467  1.00                  
+          age_group35-44 years old 8.453e-03 0.091942 -0.03 -0.03            
+          age_group45-54 years old 1.976e-02 0.140558 -0.43 -0.43  0.60      
+          age_group55+ years       4.412e-02 0.210056 -0.33 -0.33  0.58  0.82
+ Residual                          9.922e-01 0.996101                        
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.073024   0.031575  65.655
+mh_problemsTRUE          -0.036041   0.008608  -4.187
+age_group25-34 years old  0.018921   0.012710   1.489
+age_group35-44 years old  0.015082   0.017322   0.871
+age_group45-54 years old -0.032978   0.021984  -1.500
+age_group55+ years       -0.053267   0.028496  -1.869
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.110                            
+ag_g25-34yo -0.174  0.016                     
+ag_g35-44yo -0.207  0.034  0.433              
+ag_g45-54yo -0.461  0.037  0.320  0.559       
+ag_grp55+yr -0.394  0.045  0.244  0.530  0.720
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+193653.9 193763.5 -96815.0 193629.9    68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.7234 -0.8148 -0.0890  0.3306  3.4614 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.05629  0.2372  
+ Residual             0.99985  0.9999  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                           Estimate Std. Error t value
+(Intercept)                               2.0476490  0.0311085  65.823
+mh_problemsTRUE                          -0.0120238  0.0198136  -0.607
+age_group25-34 years old                  0.0281828  0.0162852   1.731
+age_group35-44 years old                  0.0365804  0.0167365   2.186
+age_group45-54 years old                 -0.0142554  0.0175237  -0.813
+age_group55+ years                       -0.0657589  0.0157751  -4.169
+mh_problemsTRUE:age_group25-34 years old -0.0119731  0.0258961  -0.462
+mh_problemsTRUE:age_group35-44 years old -0.0264276  0.0270193  -0.978
+mh_problemsTRUE:age_group45-54 years old -0.0282353  0.0289726  -0.975
+mh_problemsTRUE:age_group55+ years       -0.0008083  0.0267798  -0.030
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.260                                                           
+ag_g25-34yo -0.314  0.485                                                    
+ag_g35-44yo -0.313  0.478  0.585                                             
+ag_g45-54yo -0.305  0.462  0.563  0.566                                      
+ag_grp55+yr -0.345  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.196 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.191 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.179 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.195 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3    8 193648 193721 -96816   193632                     
+fit_4   12 193654 193764 -96815   193630 1.9473  4     0.7455</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+193367.3 193604.7 -96657.7 193315.3    68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.7206 -0.7942 -0.0976  0.3447  3.4740 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev. Corr                   
+ country  (Intercept)              6.172e-02 0.248433                        
+          age_group25-34 years old 5.925e-05 0.007697  1.00                  
+          age_group35-44 years old 8.425e-03 0.091790 -0.03 -0.03            
+          age_group45-54 years old 1.975e-02 0.140531 -0.43 -0.43  0.60      
+          age_group55+ years       4.427e-02 0.210409 -0.33 -0.33  0.58  0.82
+ Residual                          9.922e-01 0.996090                        
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.06757    0.03240  63.813
+mh_problemsTRUE                          -0.02282    0.01988  -1.148
+age_group25-34 years old                  0.02124    0.01630   1.303
+age_group35-44 years old                  0.02159    0.02016   1.071
+age_group45-54 years old                 -0.02399    0.02436  -0.985
+age_group55+ years                       -0.04548    0.02999  -1.516
+mh_problemsTRUE:age_group25-34 years old -0.00511    0.02584  -0.198
+mh_problemsTRUE:age_group35-44 years old -0.01637    0.02727  -0.600
+mh_problemsTRUE:age_group45-54 years old -0.02457    0.02925  -0.840
+mh_problemsTRUE:age_group55+ years       -0.02211    0.02703  -0.818
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.252                                                           
+ag_g25-34yo -0.251  0.482                                                    
+ag_g35-44yo -0.270  0.402  0.487                                             
+ag_g45-54yo -0.484  0.336  0.387  0.568                                      
+ag_grp55+yr -0.427  0.272  0.311  0.542  0.710                               
+m_TRUE:_2yo  0.190 -0.749 -0.626 -0.305 -0.253 -0.205                        
+m_TRUE:_3yo  0.184 -0.724 -0.353 -0.512 -0.246 -0.200  0.547                 
+m_TRUE:_4yo  0.172 -0.679 -0.328 -0.275 -0.428 -0.190  0.509       0.496     
+m_TRUE:_55y  0.185 -0.736 -0.354 -0.296 -0.250 -0.302  0.551       0.534     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.505     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3a   22 193360 193561 -96658   193316                     
+fit_4a   26 193367 193605 -96658   193315 1.1856  4     0.8805</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:   2. local_tv_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 203260.4  203324.5 -101623.2  203246.4     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.7862 -0.7349 -0.1541  0.4856  3.3598 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.06511  0.2552  
+ Residual             1.03403  1.0169  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.20150    0.03204  68.704
+age_group25-34 years old -0.01634    0.01264  -1.293
+age_group35-44 years old -0.02030    0.01315  -1.544
+age_group45-54 years old -0.04425    0.01399  -3.163
+age_group55+ years       -0.06365    0.01279  -4.977
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.231                     
+ag_g35-44yo -0.228  0.566              
+ag_g45-54yo -0.220  0.535  0.534       
+ag_grp55+yr -0.246  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+193778.5 193851.6 -96881.3 193762.5    68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.8156 -0.7229 -0.1375  0.4635  3.4172 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.066    0.2569  
+ Residual             1.002    1.0008  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.186795   0.032440  67.410
+mh_problemsTRUE          -0.025271   0.008582  -2.945
+age_group25-34 years old -0.013629   0.012705  -1.073
+age_group35-44 years old -0.022081   0.013237  -1.668
+age_group45-54 years old -0.034583   0.014089  -2.455
+age_group55+ years       -0.051439   0.012952  -3.971
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.103                            
+ag_g25-34yo -0.232  0.013                     
+ag_g35-44yo -0.231  0.034  0.568              
+ag_g45-54yo -0.225  0.051  0.537  0.537       
+ag_grp55+yr -0.256  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
+Model failed to converge with max|grad| = 0.00491765 (tol = 0.002, component 1)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+193527.8 193728.7 -96741.9 193483.8    68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.8503 -0.7291 -0.1476  0.4449  3.5023 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr                   
+ country  (Intercept)              0.059850 0.24464                         
+          age_group25-34 years old 0.005409 0.07355   0.15                  
+          age_group35-44 years old 0.008915 0.09442   0.16  0.70            
+          age_group45-54 years old 0.012389 0.11131  -0.06  0.15  0.59      
+          age_group55+ years       0.039044 0.19759  -0.16 -0.12  0.60  0.76
+ Residual                          0.994685 0.99734                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.194574   0.031198  70.344
+mh_problemsTRUE          -0.034328   0.008618  -3.983
+age_group25-34 years old -0.009506   0.015748  -0.604
+age_group35-44 years old -0.023624   0.017637  -1.339
+age_group45-54 years old -0.035454   0.019599  -1.809
+age_group55+ years       -0.031388   0.027292  -1.150
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.113                            
+ag_g25-34yo -0.130  0.016                     
+ag_g35-44yo -0.097  0.035  0.624              
+ag_g45-54yo -0.217  0.044  0.391  0.566       
+ag_grp55+yr -0.256  0.048  0.189  0.554  0.657
+optimizer (nloptwrap) convergence code: 0 (OK)
+Model failed to converge with max|grad| = 0.00491765 (tol = 0.002, component 1)
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+193773.7 193883.3 -96874.9 193749.7    68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.8232 -0.7301 -0.1329  0.4608  3.4318 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.06594  0.2568  
+ Residual             1.00145  1.0007  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.19020    0.03326  65.857
+mh_problemsTRUE                          -0.03294    0.01983  -1.661
+age_group25-34 years old                 -0.00743    0.01630  -0.456
+age_group35-44 years old                 -0.01533    0.01675  -0.915
+age_group45-54 years old                 -0.04280    0.01754  -2.440
+age_group55+ years                       -0.06560    0.01579  -4.154
+mh_problemsTRUE:age_group25-34 years old -0.01710    0.02592  -0.660
+mh_problemsTRUE:age_group35-44 years old -0.02166    0.02704  -0.801
+mh_problemsTRUE:age_group45-54 years old  0.02314    0.02900   0.798
+mh_problemsTRUE:age_group55+ years        0.05711    0.02680   2.131
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.243                                                           
+ag_g25-34yo -0.294  0.485                                                    
+ag_g35-44yo -0.293  0.478  0.585                                             
+ag_g45-54yo -0.286  0.462  0.563  0.566                                      
+ag_grp55+yr -0.323  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.184 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.178 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.168 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.183 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC logLik deviance Chisq Df Pr(&gt;Chisq)  
+fit_3    8 193779 193852 -96881   193763                      
+fit_4   12 193774 193883 -96875   193750  12.8  4    0.01229 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+193539.5 193776.9 -96743.8 193487.5    68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.8323 -0.7336 -0.1441  0.4467  3.5045 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev. Corr                   
+ country  (Intercept)              0.0588785 0.24265                         
+          age_group25-34 years old 0.0004407 0.02099   1.00                  
+          age_group35-44 years old 0.0046691 0.06833   0.37  0.37            
+          age_group45-54 years old 0.0123054 0.11093  -0.04 -0.04  0.55      
+          age_group55+ years       0.0410324 0.20256  -0.17 -0.17  0.78  0.79
+ Residual                          0.9951460 0.99757                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.20227    0.03173  69.401
+mh_problemsTRUE                          -0.04262    0.01984  -2.148
+age_group25-34 years old                 -0.01177    0.01646  -0.715
+age_group35-44 years old                 -0.02433    0.01868  -1.302
+age_group45-54 years old                 -0.04915    0.02205  -2.229
+age_group55+ years                       -0.04874    0.02909  -1.675
+mh_problemsTRUE:age_group25-34 years old -0.01031    0.02586  -0.399
+mh_problemsTRUE:age_group35-44 years old -0.01338    0.02709  -0.494
+mh_problemsTRUE:age_group45-54 years old  0.02689    0.02921   0.921
+mh_problemsTRUE:age_group55+ years        0.04015    0.02701   1.486
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.256                                                           
+ag_g25-34yo -0.165  0.477                                                    
+ag_g35-44yo -0.132  0.430  0.543                                             
+ag_g45-54yo -0.261  0.369  0.436  0.549                                      
+ag_grp55+yr -0.309  0.278  0.309  0.585  0.662                               
+m_TRUE:_2yo  0.193 -0.750 -0.619 -0.327 -0.279 -0.209                        
+m_TRUE:_3yo  0.188 -0.724 -0.352 -0.549 -0.271 -0.207  0.551                 
+m_TRUE:_4yo  0.175 -0.677 -0.326 -0.294 -0.472 -0.195  0.511       0.493     
+m_TRUE:_55y  0.187 -0.735 -0.350 -0.315 -0.273 -0.308  0.550       0.537     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.504     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC logLik deviance Chisq Df Pr(&gt;Chisq)
+fit_3a   22 193528 193729 -96742   193484                    
+fit_4a   26 193540 193777 -96744   193488     0  4          1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:   3. trust_media_national_radio_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 206602.2  206666.3 -103294.1  206588.2     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.9760 -0.8141 -0.1353  0.3658  3.1980 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.0782   0.2796  
+ Residual             1.0839   1.0411  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.21617    0.03491  63.491
+age_group25-34 years old -0.02255    0.01294  -1.743
+age_group35-44 years old -0.03929    0.01346  -2.918
+age_group45-54 years old -0.08020    0.01433  -5.598
+age_group55+ years       -0.10237    0.01310  -7.816
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.218                     
+ag_g35-44yo -0.215  0.566              
+ag_g45-54yo -0.206  0.535  0.534       
+ag_grp55+yr -0.232  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+196987.1 197060.1 -98485.5 196971.1    68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0121 -0.8202 -0.1225  0.3279  3.2637 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.07843  0.280   
+ Residual             1.04980  1.025   
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.192767   0.035146  62.391
+mh_problemsTRUE          -0.015922   0.008787  -1.812
+age_group25-34 years old -0.016319   0.013007  -1.255
+age_group35-44 years old -0.034464   0.013552  -2.543
+age_group45-54 years old -0.067843   0.014425  -4.703
+age_group55+ years       -0.079743   0.013261  -6.013
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.097                            
+ag_g25-34yo -0.220  0.013                     
+ag_g35-44yo -0.219  0.034  0.568              
+ag_g45-54yo -0.212  0.051  0.537  0.537       
+ag_grp55+yr -0.242  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+196561.5 196762.4 -98258.8 196517.5    68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2897 -0.8054 -0.1231  0.3244  3.2797 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev. Corr                   
+ country  (Intercept)              7.736e-02 0.278141                        
+          age_group25-34 years old 9.499e-05 0.009746  1.00                  
+          age_group35-44 years old 7.280e-03 0.085322 -0.10 -0.10            
+          age_group45-54 years old 1.664e-02 0.128982 -0.26 -0.26  0.22      
+          age_group55+ years       5.389e-02 0.232151 -0.18 -0.18  0.23  0.86
+ Residual                          1.040e+00 1.019572                        
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.205829   0.034978  63.063
+mh_problemsTRUE          -0.026085   0.008809  -2.961
+age_group25-34 years old -0.017931   0.013025  -1.377
+age_group35-44 years old -0.038361   0.017073  -2.247
+age_group45-54 years old -0.072315   0.021179  -3.414
+age_group55+ years       -0.065195   0.031032  -2.101
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.101                            
+ag_g25-34yo -0.136  0.016                     
+ag_g35-44yo -0.234  0.033  0.445              
+ag_g45-54yo -0.328  0.039  0.347  0.393       
+ag_grp55+yr -0.252  0.041  0.234  0.321  0.733
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+196989.7 197099.2 -98482.8 196965.7    68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0127 -0.8168 -0.1229  0.3270  3.2551 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.07844  0.2801  
+ Residual             1.04972  1.0246  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.191917   0.035951  60.970
+mh_problemsTRUE                          -0.013523   0.020303  -0.666
+age_group25-34 years old                 -0.009304   0.016687  -0.558
+age_group35-44 years old                 -0.026749   0.017150  -1.560
+age_group45-54 years old                 -0.066938   0.017958  -3.727
+age_group55+ years                       -0.086228   0.016168  -5.333
+mh_problemsTRUE:age_group25-34 years old -0.018443   0.026534  -0.695
+mh_problemsTRUE:age_group35-44 years old -0.022296   0.027685  -0.805
+mh_problemsTRUE:age_group45-54 years old -0.002706   0.029687  -0.091
+mh_problemsTRUE:age_group55+ years        0.031718   0.027441   1.156
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.230                                                           
+ag_g25-34yo -0.278  0.485                                                    
+ag_g35-44yo -0.278  0.478  0.585                                             
+ag_g45-54yo -0.271  0.462  0.563  0.566                                      
+ag_grp55+yr -0.306  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.174 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.169 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.159 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.173 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3    8 196987 197060 -98486   196971                     
+fit_4   12 196990 197099 -98483   196966 5.3851  4       0.25</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+196568.9 196806.2 -98258.4 196516.9    68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2845 -0.8054 -0.1232  0.3214  3.2712 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev. Corr                   
+ country  (Intercept)              0.0772752 0.277984                        
+          age_group25-34 years old 0.0000985 0.009924  1.00                  
+          age_group35-44 years old 0.0073286 0.085607 -0.10 -0.10            
+          age_group45-54 years old 0.0166314 0.128963 -0.26 -0.26  0.23      
+          age_group55+ years       0.0536688 0.231665 -0.18 -0.18  0.23  0.86
+ Residual                          1.0395164 1.019567                        
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.205402   0.035768  61.658
+mh_problemsTRUE                          -0.025132   0.020330  -1.236
+age_group25-34 years old                 -0.013383   0.016690  -0.802
+age_group35-44 years old                 -0.037737   0.020104  -1.877
+age_group45-54 years old                 -0.072670   0.023747  -3.060
+age_group55+ years                       -0.067352   0.032399  -2.079
+mh_problemsTRUE:age_group25-34 years old -0.011859   0.026444  -0.448
+mh_problemsTRUE:age_group35-44 years old -0.001542   0.027936  -0.055
+mh_problemsTRUE:age_group45-54 years old  0.001528   0.029873   0.051
+mh_problemsTRUE:age_group55+ years        0.009219   0.027664   0.333
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.233                                                           
+ag_g25-34yo -0.214  0.482                                                    
+ag_g35-44yo -0.289  0.412  0.496                                             
+ag_g45-54yo -0.365  0.352  0.412  0.445                                      
+ag_grp55+yr -0.292  0.258  0.299  0.368  0.717                               
+m_TRUE:_2yo  0.176 -0.749 -0.625 -0.313 -0.266 -0.194                        
+m_TRUE:_3yo  0.170 -0.722 -0.352 -0.525 -0.257 -0.188  0.546                 
+m_TRUE:_4yo  0.160 -0.679 -0.329 -0.282 -0.449 -0.182  0.511       0.492     
+m_TRUE:_55y  0.171 -0.735 -0.354 -0.303 -0.262 -0.287  0.550       0.532     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.506     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3a   22 196562 196762 -98259   196518                     
+fit_4a   26 196569 196806 -98258   196517 0.6964  4     0.9518</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:   4. local_radio_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 203693.0  203757.2 -101839.5  203679.0     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0761 -0.7108 -0.1687  0.5452  3.2943 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.08189  0.2862  
+ Residual             1.04015  1.0199  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.31876    0.03560  65.143
+age_group25-34 years old -0.05902    0.01267  -4.657
+age_group35-44 years old -0.09376    0.01319  -7.108
+age_group45-54 years old -0.13655    0.01403  -9.729
+age_group55+ years       -0.13018    0.01283 -10.146
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.209                     
+ag_g35-44yo -0.206  0.566              
+ag_g45-54yo -0.198  0.535  0.534       
+ag_grp55+yr -0.222  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+  194318   194391   -97151   194302    68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.1138 -0.7152 -0.1529  0.5056  3.3535 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.08254  0.2873  
+ Residual             1.00938  1.0047  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.301621   0.035910  64.095
+mh_problemsTRUE          -0.023262   0.008616  -2.700
+age_group25-34 years old -0.054038   0.012754  -4.237
+age_group35-44 years old -0.088928   0.013289  -6.692
+age_group45-54 years old -0.125859   0.014145  -8.898
+age_group55+ years       -0.113645   0.013005  -8.739
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.093                            
+ag_g25-34yo -0.211  0.013                     
+ag_g35-44yo -0.210  0.034  0.568              
+ag_g45-54yo -0.204  0.051  0.537  0.537       
+ag_grp55+yr -0.232  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
+Model failed to converge with max|grad| = 0.0252044 (tol = 0.002, component 1)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+194059.7 194260.5 -97007.8 194015.7    68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2712 -0.7293 -0.1469  0.5286  3.3803 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr                   
+ country  (Intercept)              0.078959 0.28100                         
+          age_group25-34 years old 0.006137 0.07834  -0.09                  
+          age_group35-44 years old 0.008381 0.09155  -0.02  0.97            
+          age_group45-54 years old 0.009583 0.09789  -0.13  0.53  0.55      
+          age_group55+ years       0.039755 0.19939  -0.10  0.30  0.44  0.81
+ Residual                          1.002455 1.00123                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.30652    0.03534  65.261
+mh_problemsTRUE          -0.03061    0.00865  -3.539
+age_group25-34 years old -0.05348    0.01619  -3.303
+age_group35-44 years old -0.08699    0.01751  -4.969
+age_group45-54 years old -0.12641    0.01863  -6.786
+age_group55+ years       -0.10779    0.02756  -3.911
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.100                            
+ag_g25-34yo -0.235  0.019                     
+ag_g35-44yo -0.187  0.035  0.730              
+ag_g45-54yo -0.249  0.048  0.549  0.555       
+ag_grp55+yr -0.198  0.048  0.390  0.466  0.663
+optimizer (nloptwrap) convergence code: 0 (OK)
+Model failed to converge with max|grad| = 0.0252044 (tol = 0.002, component 1)
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+194318.8 194428.3 -97147.4 194294.8    68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.1132 -0.7107 -0.1501  0.5059  3.3642 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.08253  0.2873  
+ Residual             1.00927  1.0046  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                           Estimate Std. Error t value
+(Intercept)                               2.3004102  0.0366645  62.742
+mh_problemsTRUE                          -0.0201659  0.0199080  -1.013
+age_group25-34 years old                 -0.0521045  0.0163624  -3.184
+age_group35-44 years old                 -0.0749677  0.0168169  -4.458
+age_group45-54 years old                 -0.1253108  0.0176092  -7.116
+age_group55+ years                       -0.1192556  0.0158550  -7.522
+mh_problemsTRUE:age_group25-34 years old -0.0048894  0.0260182  -0.188
+mh_problemsTRUE:age_group35-44 years old -0.0402321  0.0271469  -1.482
+mh_problemsTRUE:age_group45-54 years old -0.0009857  0.0291097  -0.034
+mh_problemsTRUE:age_group55+ years        0.0288836  0.0269070   1.073
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.222                                                           
+ag_g25-34yo -0.268  0.485                                                    
+ag_g35-44yo -0.267  0.478  0.585                                             
+ag_g45-54yo -0.260  0.462  0.563  0.566                                      
+ag_grp55+yr -0.294  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.167 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.163 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.153 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.166 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3    8 194318 194391 -97151   194302                     
+fit_4   12 194319 194428 -97147   194295 7.1711  4     0.1271</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
+Model failed to converge with max|grad| = 0.0546031 (tol = 0.002, component 1)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+194065.0 194302.3 -97006.5 194013.0    68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2644 -0.7339 -0.1473  0.5291  3.3930 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr                   
+ country  (Intercept)              0.079014 0.28109                         
+          age_group25-34 years old 0.006186 0.07865  -0.09                  
+          age_group35-44 years old 0.008108 0.09004  -0.01  0.97            
+          age_group45-54 years old 0.009604 0.09800  -0.13  0.54  0.56      
+          age_group55+ years       0.039555 0.19888  -0.10  0.30  0.45  0.81
+ Residual                          1.002426 1.00121                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.306886   0.036172  63.775
+mh_problemsTRUE                          -0.031610   0.020222  -1.563
+age_group25-34 years old                 -0.055868   0.019342  -2.888
+age_group35-44 years old                 -0.078570   0.020342  -3.862
+age_group45-54 years old                 -0.128934   0.021505  -5.995
+age_group55+ years                       -0.111710   0.029103  -3.838
+mh_problemsTRUE:age_group25-34 years old  0.006118   0.026369   0.232
+mh_problemsTRUE:age_group35-44 years old -0.024953   0.027519  -0.907
+mh_problemsTRUE:age_group45-54 years old  0.007967   0.029435   0.271
+mh_problemsTRUE:age_group55+ years        0.015270   0.027351   0.558
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.233                                                           
+ag_g25-34yo -0.292  0.429                                                    
+ag_g35-44yo -0.251  0.412  0.701                                             
+ag_g45-54yo -0.299  0.392  0.569  0.575                                      
+ag_grp55+yr -0.246  0.290  0.433  0.499  0.658                               
+m_TRUE:_2yo  0.177 -0.759 -0.545 -0.318 -0.300 -0.220                        
+m_TRUE:_3yo  0.171 -0.731 -0.319 -0.517 -0.290 -0.214  0.567                 
+m_TRUE:_4yo  0.161 -0.684 -0.297 -0.286 -0.495 -0.206  0.523       0.502     
+m_TRUE:_55y  0.172 -0.739 -0.317 -0.305 -0.294 -0.320  0.561       0.542     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.512     
+optimizer (nloptwrap) convergence code: 0 (OK)
+Model failed to converge with max|grad| = 0.0546031 (tol = 0.002, component 1)
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3a   22 194060 194261 -97008   194016                     
+fit_4a   26 194065 194302 -97006   194013 2.7175  4     0.6062</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:   5. international_tv_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 218073.6  218137.8 -109029.8  218059.6     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0509 -0.7417 -0.2233  0.5459  2.9066 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.0999   0.3161  
+ Residual             1.2748   1.1291  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.26898    0.03932  57.701
+age_group25-34 years old  0.01750    0.01403   1.247
+age_group35-44 years old  0.05851    0.01460   4.007
+age_group45-54 years old  0.08662    0.01554   5.575
+age_group55+ years        0.19437    0.01420  13.684
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.209                     
+ag_g35-44yo -0.207  0.566              
+ag_g45-54yo -0.199  0.535  0.534       
+ag_grp55+yr -0.223  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 208682.6  208755.6 -104333.3  208666.6     68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0904 -0.7462 -0.2021  0.5581  3.0255 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.1009   0.3177  
+ Residual             1.2463   1.1164  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.272530   0.039722  57.211
+mh_problemsTRUE          -0.072478   0.009574  -7.570
+age_group25-34 years old  0.018878   0.014172   1.332
+age_group35-44 years old  0.055343   0.014766   3.748
+age_group45-54 years old  0.088744   0.015718   5.646
+age_group55+ years        0.198543   0.014450  13.740
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.094                            
+ag_g25-34yo -0.212  0.013                     
+ag_g35-44yo -0.211  0.034  0.568              
+ag_g45-54yo -0.205  0.051  0.537  0.537       
+ag_grp55+yr -0.234  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 208320.9  208521.8 -104138.5  208276.9     68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.3041 -0.7507 -0.2059  0.5688  2.9660 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr               
+ country  (Intercept)              0.071160 0.26676                     
+          age_group25-34 years old 0.001692 0.04113  1.00               
+          age_group35-44 years old 0.012505 0.11183  0.53 0.53          
+          age_group45-54 years old 0.019199 0.13856  0.29 0.29 0.70     
+          age_group55+ years       0.059119 0.24314  0.18 0.18 0.51 0.88
+ Residual                          1.235816 1.11167                     
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.272590   0.033992  66.857
+mh_problemsTRUE          -0.078527   0.009604  -8.177
+age_group25-34 years old  0.023981   0.014954   1.604
+age_group35-44 years old  0.060047   0.019991   3.004
+age_group45-54 years old  0.093633   0.022843   4.099
+age_group55+ years        0.209084   0.032722   6.390
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.114                            
+ag_g25-34yo  0.076  0.015                     
+ag_g35-44yo  0.149  0.031  0.511              
+ag_g45-54yo  0.029  0.039  0.413  0.615       
+ag_grp55+yr  0.034  0.042  0.293  0.495  0.744
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 208687.7  208797.2 -104331.8  208663.7     68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0908 -0.7455 -0.2021  0.5565  3.0210 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.1009   0.3177  
+ Residual             1.2462   1.1164  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.269198   0.040567  55.937
+mh_problemsTRUE                          -0.064152   0.022122  -2.900
+age_group25-34 years old                  0.030616   0.018182   1.684
+age_group35-44 years old                  0.050574   0.018687   2.706
+age_group45-54 years old                  0.093548   0.019567   4.781
+age_group55+ years                        0.202019   0.017618  11.467
+mh_problemsTRUE:age_group25-34 years old -0.030513   0.028912  -1.055
+mh_problemsTRUE:age_group35-44 years old  0.015344   0.030166   0.509
+mh_problemsTRUE:age_group45-54 years old -0.013145   0.032347  -0.406
+mh_problemsTRUE:age_group55+ years       -0.009029   0.029899  -0.302
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.223                                                           
+ag_g25-34yo -0.269  0.485                                                    
+ag_g35-44yo -0.268  0.478  0.585                                             
+ag_g45-54yo -0.261  0.462  0.563  0.566                                      
+ag_grp55+yr -0.296  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.168 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.163 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.154 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.167 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
+fit_3    8 208683 208756 -104333   208667                    
+fit_4   12 208688 208797 -104332   208664 2.896  4     0.5754</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
+Model failed to converge with max|grad| = 0.00373416 (tol = 0.002, component 1)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 208315.6  208552.9 -104131.8  208263.6     68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.3076 -0.7496 -0.2095  0.5715  2.9659 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr               
+ country  (Intercept)              0.072207 0.2687                      
+          age_group25-34 years old 0.006497 0.0806   0.39               
+          age_group35-44 years old 0.019227 0.1387   0.33 0.80          
+          age_group45-54 years old 0.018918 0.1375   0.28 0.23 0.71     
+          age_group55+ years       0.059235 0.2434   0.17 0.17 0.50 0.88
+ Residual                          1.235223 1.1114                      
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.26704    0.03532  64.192
+mh_problemsTRUE                          -0.06713    0.02232  -3.007
+age_group25-34 years old                  0.03647    0.02087   1.747
+age_group35-44 years old                  0.05403    0.02527   2.138
+age_group45-54 years old                  0.10041    0.02582   3.889
+age_group55+ years                        0.21911    0.03448   6.355
+mh_problemsTRUE:age_group25-34 years old -0.02815    0.02911  -0.967
+mh_problemsTRUE:age_group35-44 years old  0.02255    0.03064   0.736
+mh_problemsTRUE:age_group45-54 years old -0.01519    0.03257  -0.466
+mh_problemsTRUE:age_group55+ years       -0.02917    0.03027  -0.964
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.262                                                           
+ag_g25-34yo -0.118  0.432                                                    
+ag_g35-44yo -0.046  0.366  0.641                                             
+ag_g45-54yo -0.077  0.359  0.461  0.634                                      
+ag_grp55+yr -0.046  0.268  0.356  0.525  0.727                               
+m_TRUE:_2yo  0.198 -0.753 -0.554 -0.280 -0.271 -0.203                        
+m_TRUE:_3yo  0.191 -0.729 -0.317 -0.459 -0.264 -0.196  0.558                 
+m_TRUE:_4yo  0.181 -0.681 -0.298 -0.255 -0.455 -0.191  0.513       0.504     
+m_TRUE:_55y  0.193 -0.738 -0.318 -0.270 -0.269 -0.297  0.555       0.538     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.510     
+optimizer (nloptwrap) convergence code: 0 (OK)
+Model failed to converge with max|grad| = 0.00373416 (tol = 0.002, component 1)
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)   
+fit_3a   22 208321 208522 -104138   208277                        
+fit_4a   26 208316 208553 -104132   208264 13.371  4   0.009598 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:   6. international_radio_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 219662.3  219726.5 -109824.2  219648.3     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0877 -0.7578 -0.2286  0.5869  2.8949 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.1044   0.3231  
+ Residual             1.3038   1.1418  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)              2.344972   0.040165  58.383
+age_group25-34 years old 0.006979   0.014189   0.492
+age_group35-44 years old 0.064229   0.014767   4.349
+age_group45-54 years old 0.073469   0.015713   4.676
+age_group55+ years       0.187024   0.014365  13.019
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.207                     
+ag_g35-44yo -0.205  0.566              
+ag_g45-54yo -0.197  0.535  0.534       
+ag_grp55+yr -0.221  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 210251.3  210324.3 -105117.7  210235.3     68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.1311 -0.7505 -0.2253  0.5879  2.9708 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.1048   0.3238  
+ Residual             1.2753   1.1293  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.344375   0.040460  57.944
+mh_problemsTRUE          -0.066061   0.009685  -6.821
+age_group25-34 years old  0.006750   0.014336   0.471
+age_group35-44 years old  0.064328   0.014937   4.307
+age_group45-54 years old  0.079046   0.015900   4.972
+age_group55+ years        0.196928   0.014618  13.472
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.093                            
+ag_g25-34yo -0.210  0.013                     
+ag_g35-44yo -0.209  0.034  0.568              
+ag_g45-54yo -0.203  0.051  0.537  0.537       
+ag_grp55+yr -0.232  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 209828.6  210029.5 -104892.3  209784.6     68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.3223 -0.7360 -0.2039  0.5861  2.9762 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev. Corr               
+ country  (Intercept)              0.0804618 0.28366                     
+          age_group25-34 years old 0.0005131 0.02265  1.00               
+          age_group35-44 years old 0.0124894 0.11176  0.32 0.32          
+          age_group45-54 years old 0.0234473 0.15313  0.15 0.15 0.45     
+          age_group55+ years       0.0634496 0.25189  0.14 0.14 0.32 0.92
+ Residual                          1.2630911 1.12387                     
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.342354   0.035953  65.151
+mh_problemsTRUE          -0.069800   0.009711  -7.187
+age_group25-34 years old  0.011792   0.014545   0.811
+age_group35-44 years old  0.070149   0.020149   3.482
+age_group45-54 years old  0.085278   0.024286   3.511
+age_group55+ years        0.202969   0.033743   6.015
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.109                            
+ag_g25-34yo -0.057  0.016                     
+ag_g35-44yo  0.019  0.031  0.452              
+ag_g45-54yo -0.047  0.037  0.364  0.487       
+ag_grp55+yr  0.004  0.042  0.270  0.379  0.783
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 210255.1  210364.6 -105115.5  210231.1     68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.1303 -0.7502 -0.2241  0.5865  2.9760 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.1048   0.3237  
+ Residual             1.2752   1.1293  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.333359   0.041297  56.502
+mh_problemsTRUE                          -0.039037   0.022378  -1.744
+age_group25-34 years old                  0.025335   0.018392   1.377
+age_group35-44 years old                  0.081887   0.018903   4.332
+age_group45-54 years old                  0.083657   0.019794   4.226
+age_group55+ years                        0.207470   0.017822  11.641
+mh_problemsTRUE:age_group25-34 years old -0.047220   0.029246  -1.615
+mh_problemsTRUE:age_group35-44 years old -0.046185   0.030515  -1.514
+mh_problemsTRUE:age_group45-54 years old -0.005892   0.032721  -0.180
+mh_problemsTRUE:age_group55+ years       -0.024264   0.030245  -0.802
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.221                                                           
+ag_g25-34yo -0.267  0.485                                                    
+ag_g35-44yo -0.266  0.478  0.585                                             
+ag_g45-54yo -0.260  0.462  0.563  0.566                                      
+ag_grp55+yr -0.294  0.517  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.167 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.162 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.153 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.166 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3    8 210251 210324 -105118   210235                     
+fit_4   12 210255 210365 -105116   210231 4.2542  4     0.3727</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
+Model failed to converge with max|grad| = 0.0287625 (tol = 0.002, component 1)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 209826.7  210064.1 -104887.4  209774.7     68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.3242 -0.7361 -0.2036  0.5869  2.9866 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr               
+ country  (Intercept)              0.080667 0.28402                     
+          age_group25-34 years old 0.003135 0.05599  0.32               
+          age_group35-44 years old 0.020028 0.14152  0.15 0.94          
+          age_group45-54 years old 0.024411 0.15624  0.13 0.27 0.53     
+          age_group55+ years       0.063698 0.25239  0.13 0.14 0.36 0.91
+ Residual                          1.262783 1.12374                     
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.331056   0.037044  62.926
+mh_problemsTRUE                          -0.042436   0.022555  -1.881
+age_group25-34 years old                  0.029369   0.019724   1.489
+age_group35-44 years old                  0.084852   0.025656   3.307
+age_group45-54 years old                  0.090068   0.027418   3.285
+age_group55+ years                        0.216377   0.035492   6.096
+mh_problemsTRUE:age_group25-34 years old -0.045633   0.029277  -1.559
+mh_problemsTRUE:age_group35-44 years old -0.036324   0.031037  -1.170
+mh_problemsTRUE:age_group45-54 years old -0.005575   0.032986  -0.169
+mh_problemsTRUE:age_group55+ years       -0.035964   0.030576  -1.176
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.252                                                           
+ag_g25-34yo -0.188  0.458                                                    
+ag_g35-44yo -0.139  0.364  0.630                                             
+ag_g45-54yo -0.138  0.341  0.455  0.556                                      
+ag_grp55+yr -0.066  0.263  0.344  0.445  0.765                               
+m_TRUE:_2yo  0.191 -0.753 -0.589 -0.279 -0.258 -0.199                        
+m_TRUE:_3yo  0.183 -0.728 -0.335 -0.457 -0.250 -0.192  0.557                 
+m_TRUE:_4yo  0.173 -0.682 -0.314 -0.251 -0.432 -0.188  0.514       0.500     
+m_TRUE:_55y  0.186 -0.738 -0.338 -0.269 -0.256 -0.291  0.555       0.537     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.511     
+optimizer (nloptwrap) convergence code: 0 (OK)
+Model failed to converge with max|grad| = 0.0287625 (tol = 0.002, component 1)
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)  
+fit_3a   22 209829 210029 -104892   209785                      
+fit_4a   26 209827 210064 -104887   209775 9.917  4    0.04185 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:   7. national_print_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 210106.0  210170.2 -105046.0  210092.0     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.9604 -0.5949 -0.2237  0.5830  3.0036 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.06905  0.2628  
+ Residual             1.13923  1.0673  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.28541    0.03306  69.131
+age_group25-34 years old  0.04059    0.01326   3.061
+age_group35-44 years old  0.05625    0.01380   4.075
+age_group45-54 years old  0.05061    0.01469   3.446
+age_group55+ years        0.06088    0.01342   4.535
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.235                     
+ag_g35-44yo -0.232  0.566              
+ag_g45-54yo -0.223  0.535  0.534       
+ag_grp55+yr -0.251  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 200714.2  200787.2 -100349.1  200698.2     68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0019 -0.6183 -0.2015  0.5744  3.0894 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.06971  0.264   
+ Residual             1.10902  1.053   
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.271802   0.033423  67.971
+mh_problemsTRUE          -0.038246   0.009031  -4.235
+age_group25-34 years old  0.045416   0.013368   3.397
+age_group35-44 years old  0.058050   0.013928   4.168
+age_group45-54 years old  0.064668   0.014825   4.362
+age_group55+ years        0.077505   0.013628   5.687
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.105                            
+ag_g25-34yo -0.237  0.013                     
+ag_g35-44yo -0.236  0.034  0.568              
+ag_g45-54yo -0.230  0.051  0.537  0.537       
+ag_grp55+yr -0.262  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 200381.7  200582.5 -100168.8  200337.7     68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0773 -0.6687 -0.1860  0.5660  3.0994 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev.  Corr                   
+ country  (Intercept)              6.794e-02 0.2606605                        
+          age_group25-34 years old 8.384e-08 0.0002895 -1.00                  
+          age_group35-44 years old 9.585e-03 0.0979028  0.19 -0.19            
+          age_group45-54 years old 1.874e-02 0.1369049 -0.14  0.14  0.57      
+          age_group55+ years       5.372e-02 0.2317776 -0.20  0.20  0.48  0.90
+ Residual                          1.100e+00 1.0487711                        
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.290789   0.033110  69.187
+mh_problemsTRUE          -0.049089   0.009063  -5.416
+age_group25-34 years old  0.040552   0.013351   3.037
+age_group35-44 years old  0.046462   0.018320   2.536
+age_group45-54 years old  0.056300   0.022148   2.542
+age_group55+ years        0.095810   0.031119   3.079
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.111                            
+ag_g25-34yo -0.244  0.016                     
+ag_g35-44yo -0.071  0.033  0.434              
+ag_g45-54yo -0.254  0.039  0.361  0.550       
+ag_grp55+yr -0.280  0.043  0.256  0.469  0.766
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 200705.6  200815.2 -100340.8  200681.6     68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0106 -0.6205 -0.2038  0.5777  3.1069 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.06957  0.2638  
+ Residual             1.10876  1.0530  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.284887   0.034284  66.645
+mh_problemsTRUE                          -0.069511   0.020865  -3.331
+age_group25-34 years old                  0.037687   0.017149   2.198
+age_group35-44 years old                  0.054103   0.017625   3.070
+age_group45-54 years old                  0.052121   0.018454   2.824
+age_group55+ years                        0.050061   0.016614   3.013
+mh_problemsTRUE:age_group25-34 years old  0.018026   0.027270   0.661
+mh_problemsTRUE:age_group35-44 years old  0.005034   0.028453   0.177
+mh_problemsTRUE:age_group45-54 years old  0.028998   0.030510   0.950
+mh_problemsTRUE:age_group55+ years        0.096987   0.028201   3.439
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.248                                                           
+ag_g25-34yo -0.300  0.485                                                    
+ag_g35-44yo -0.299  0.478  0.585                                             
+ag_g45-54yo -0.292  0.462  0.563  0.566                                      
+ag_grp55+yr -0.330  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.188 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.182 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.172 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.186 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)   
+fit_3    8 200714 200787 -100349   200698                        
+fit_4   12 200706 200815 -100341   200682 16.567  4   0.002345 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 200382.6  200620.0 -100165.3  200330.6     68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0780 -0.6785 -0.1854  0.5595  3.1132 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev.  Corr                   
+ country  (Intercept)              6.790e-02 0.2605836                        
+          age_group25-34 years old 8.418e-08 0.0002901 -1.00                  
+          age_group35-44 years old 9.715e-03 0.0985654  0.19 -0.19            
+          age_group45-54 years old 1.891e-02 0.1375109 -0.14  0.14  0.58      
+          age_group55+ years       5.265e-02 0.2294633 -0.20  0.20  0.48  0.90
+ Residual                          1.100e+00 1.0487217                        
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.30392    0.03400  67.753
+mh_problemsTRUE                          -0.08110    0.02093  -3.875
+age_group25-34 years old                  0.02949    0.01713   1.721
+age_group35-44 years old                  0.03605    0.02136   1.688
+age_group45-54 years old                  0.04375    0.02480   1.765
+age_group55+ years                        0.07238    0.03236   2.237
+mh_problemsTRUE:age_group25-34 years old  0.02696    0.02720   0.991
+mh_problemsTRUE:age_group35-44 years old  0.02401    0.02873   0.836
+mh_problemsTRUE:age_group45-54 years old  0.02981    0.03072   0.970
+mh_problemsTRUE:age_group55+ years        0.07300    0.02845   2.566
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.253                                                           
+ag_g25-34yo -0.307  0.483                                                    
+ag_g35-44yo -0.160  0.400  0.486                                             
+ag_g45-54yo -0.306  0.347  0.420  0.566                                      
+ag_grp55+yr -0.325  0.265  0.320  0.494  0.747                               
+m_TRUE:_2yo  0.191 -0.750 -0.627 -0.303 -0.262 -0.200                        
+m_TRUE:_3yo  0.184 -0.723 -0.354 -0.509 -0.255 -0.194  0.547                 
+m_TRUE:_4yo  0.173 -0.680 -0.330 -0.275 -0.442 -0.188  0.511       0.496     
+m_TRUE:_55y  0.186 -0.736 -0.355 -0.294 -0.259 -0.294  0.551       0.533     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.508     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3a   22 200382 200583 -100169   200338                     
+fit_4a   26 200383 200620 -100165   200331 7.0625  4     0.1326</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:   8. local_print_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 209011.2  209075.3 -104498.6  208997.2     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0170 -0.5860 -0.2419  0.5516  2.9828 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.06975  0.2641  
+ Residual             1.12169  1.0591  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                           Estimate Std. Error t value
+(Intercept)               2.386e+00  3.319e-02  71.894
+age_group25-34 years old -1.922e-04  1.316e-02  -0.015
+age_group35-44 years old  1.808e-02  1.370e-02   1.320
+age_group45-54 years old  2.594e-05  1.457e-02   0.002
+age_group55+ years        7.926e-03  1.332e-02   0.595
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.233                     
+ag_g35-44yo -0.230  0.566              
+ag_g45-54yo -0.221  0.535  0.534       
+ag_grp55+yr -0.248  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+199721.5 199794.5 -99852.8 199705.5    68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0451 -0.6029 -0.2303  0.5716  3.0861 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.07043  0.2654  
+ Residual             1.09296  1.0454  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.373943   0.033551  70.757
+mh_problemsTRUE          -0.037593   0.008965  -4.193
+age_group25-34 years old  0.003903   0.013271   0.294
+age_group35-44 years old  0.018216   0.013827   1.317
+age_group45-54 years old  0.012408   0.014717   0.843
+age_group55+ years        0.022215   0.013529   1.642
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.104                            
+ag_g25-34yo -0.235  0.013                     
+ag_g35-44yo -0.234  0.034  0.568              
+ag_g45-54yo -0.227  0.051  0.537  0.537       
+ag_grp55+yr -0.259  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
+unable to evaluate scaled gradient</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
+Model failed to converge: degenerate Hessian with 1 negative eigenvalues</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+199473.4 199674.3 -99714.7 199429.4    68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0994 -0.5888 -0.2138  0.5637  3.1211 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr                   
+ country  (Intercept)              0.073301 0.27074                         
+          age_group25-34 years old 0.004687 0.06846  -0.12                  
+          age_group35-44 years old 0.018424 0.13573  -0.03  0.99            
+          age_group45-54 years old 0.013196 0.11487  -0.27  0.70  0.76      
+          age_group55+ years       0.044949 0.21201  -0.33  0.44  0.51  0.90
+ Residual                          1.085611 1.04193                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.395275   0.034332  69.769
+mh_problemsTRUE          -0.045535   0.009006  -5.056
+age_group25-34 years old -0.008224   0.015852  -0.519
+age_group35-44 years old  0.002477   0.021617   0.115
+age_group45-54 years old -0.002056   0.020365  -0.101
+age_group55+ years        0.031436   0.029096   1.080
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.108                            
+ag_g25-34yo -0.268  0.021                     
+ag_g35-44yo -0.185  0.032  0.716              
+ag_g45-54yo -0.347  0.047  0.595  0.656       
+ag_grp55+yr -0.394  0.048  0.442  0.522  0.740
+optimizer (nloptwrap) convergence code: 0 (OK)
+unable to evaluate scaled gradient
+Model failed to converge: degenerate  Hessian with 1 negative eigenvalues
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+199718.7 199828.3 -99847.4 199694.7    68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0443 -0.6063 -0.2285  0.5697  3.1053 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.07035  0.2652  
+ Residual             1.09278  1.0454  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                           Estimate Std. Error t value
+(Intercept)                               2.3882923  0.0344076  69.412
+mh_problemsTRUE                          -0.0720419  0.0207145  -3.478
+age_group25-34 years old                 -0.0066540  0.0170254  -0.391
+age_group35-44 years old                  0.0075483  0.0174977   0.431
+age_group45-54 years old                 -0.0005115  0.0183213  -0.028
+age_group55+ years                       -0.0034217  0.0164943  -0.207
+mh_problemsTRUE:age_group25-34 years old  0.0252865  0.0270730   0.934
+mh_problemsTRUE:age_group35-44 years old  0.0241069  0.0282473   0.853
+mh_problemsTRUE:age_group45-54 years old  0.0292849  0.0302895   0.967
+mh_problemsTRUE:age_group55+ years        0.0857721  0.0279972   3.064
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.246                                                           
+ag_g25-34yo -0.297  0.485                                                    
+ag_g35-44yo -0.296  0.478  0.585                                             
+ag_g45-54yo -0.289  0.462  0.563  0.566                                      
+ag_grp55+yr -0.326  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.186 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.180 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.170 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.184 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC logLik deviance  Chisq Df Pr(&gt;Chisq)  
+fit_3    8 199722 199795 -99853   199706                       
+fit_4   12 199719 199828 -99847   199695 10.768  4    0.02929 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+199492.0 199729.3 -99720.0 199440.0    68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.1067 -0.5848 -0.2182  0.5652  3.0988 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev. Corr                   
+ country  (Intercept)              6.965e-02 0.263907                        
+          age_group25-34 years old 7.547e-05 0.008687  1.00                  
+          age_group35-44 years old 9.912e-03 0.099560  0.19  0.19            
+          age_group45-54 years old 8.926e-03 0.094480 -0.18 -0.18  0.58      
+          age_group55+ years       3.845e-02 0.196081 -0.27 -0.27  0.39  0.91
+ Residual                          1.086e+00 1.042081                        
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.404417   0.034323  70.052
+mh_problemsTRUE                          -0.080157   0.020776  -3.858
+age_group25-34 years old                 -0.012873   0.017046  -0.755
+age_group35-44 years old                 -0.008094   0.021318  -0.380
+age_group45-54 years old                 -0.010214   0.021587  -0.473
+age_group55+ years                        0.015420   0.028968   0.532
+mh_problemsTRUE:age_group25-34 years old  0.033262   0.027027   1.231
+mh_problemsTRUE:age_group35-44 years old  0.038661   0.028559   1.354
+mh_problemsTRUE:age_group45-54 years old  0.032078   0.030400   1.055
+mh_problemsTRUE:age_group55+ years        0.062572   0.028249   2.215
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.249                                                           
+ag_g25-34yo -0.243  0.482                                                    
+ag_g35-44yo -0.154  0.398  0.488                                             
+ag_g45-54yo -0.334  0.395  0.472  0.572                                      
+ag_grp55+yr -0.387  0.294  0.340  0.470  0.688                               
+m_TRUE:_2yo  0.187 -0.749 -0.625 -0.301 -0.299 -0.221                        
+m_TRUE:_3yo  0.181 -0.723 -0.352 -0.506 -0.290 -0.215  0.546                 
+m_TRUE:_4yo  0.171 -0.681 -0.331 -0.275 -0.503 -0.209  0.513       0.498     
+m_TRUE:_55y  0.183 -0.736 -0.354 -0.292 -0.295 -0.326  0.551       0.533     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.508     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC logLik deviance Chisq Df Pr(&gt;Chisq)
+fit_3a   22 199473 199674 -99715   199429                    
+fit_4a   26 199492 199729 -99720   199440     0  4          1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:   9. word_of_mouth_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 207547.2  207611.3 -103766.6  207533.2     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.1317 -0.7013 -0.1500  0.6202  2.7475 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.06814  0.261   
+ Residual             1.09870  1.048   
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.69700    0.03280  82.217
+age_group25-34 years old -0.08604    0.01302  -6.606
+age_group35-44 years old -0.10839    0.01356  -7.996
+age_group45-54 years old -0.11183    0.01442  -7.754
+age_group55+ years       -0.05170    0.01318  -3.922
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.233                     
+ag_g35-44yo -0.230  0.566              
+ag_g45-54yo -0.221  0.535  0.534       
+ag_grp55+yr -0.248  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+198437.8 198510.8 -99210.9 198421.8    68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.1762 -0.6964 -0.1600  0.6280  2.8156 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.06541  0.2557  
+ Residual             1.07261  1.0357  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.712760   0.032430  83.650
+mh_problemsTRUE          -0.084469   0.008881  -9.511
+age_group25-34 years old -0.088896   0.013147  -6.762
+age_group35-44 years old -0.113601   0.013697  -8.294
+age_group45-54 years old -0.108235   0.014579  -7.424
+age_group55+ years       -0.055428   0.013402  -4.136
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.106                            
+ag_g25-34yo -0.240  0.013                     
+ag_g35-44yo -0.240  0.034  0.568              
+ag_g45-54yo -0.233  0.051  0.537  0.537       
+ag_grp55+yr -0.265  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+198355.8 198556.7 -99155.9 198311.8    68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2208 -0.6994 -0.1453  0.6292  2.8636 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr                   
+ country  (Intercept)              0.070058 0.26469                         
+          age_group25-34 years old 0.003441 0.05866  -0.19                  
+          age_group35-44 years old 0.008857 0.09411  -0.17  0.96            
+          age_group45-54 years old 0.014257 0.11940  -0.21  0.55  0.68      
+          age_group55+ years       0.017750 0.13323  -0.31  0.23  0.40  0.93
+ Residual                          1.068886 1.03387                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.714605   0.033591  80.813
+mh_problemsTRUE          -0.085188   0.008924  -9.546
+age_group25-34 years old -0.091036   0.015171  -6.001
+age_group35-44 years old -0.113055   0.018017  -6.275
+age_group45-54 years old -0.109636   0.020586  -5.326
+age_group55+ years       -0.055087   0.021206  -2.598
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.108                            
+ag_g25-34yo -0.299  0.019                     
+ag_g35-44yo -0.291  0.035  0.683              
+ag_g45-54yo -0.309  0.042  0.528  0.607       
+ag_grp55+yr -0.394  0.069  0.431  0.495  0.767
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+198436.1 198545.6 -99206.0 198412.1    68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.1755 -0.6996 -0.1590  0.6240  2.8287 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.0652   0.2553  
+ Residual             1.0725   1.0356  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.69123    0.03327  80.886
+mh_problemsTRUE                          -0.03221    0.02052  -1.570
+age_group25-34 years old                 -0.06148    0.01687  -3.645
+age_group35-44 years old                 -0.08895    0.01733  -5.132
+age_group45-54 years old                 -0.07727    0.01815  -4.257
+age_group55+ years                       -0.03462    0.01634  -2.119
+mh_problemsTRUE:age_group25-34 years old -0.06861    0.02682  -2.558
+mh_problemsTRUE:age_group35-44 years old -0.06166    0.02798  -2.203
+mh_problemsTRUE:age_group45-54 years old -0.08271    0.03001  -2.756
+mh_problemsTRUE:age_group55+ years       -0.04685    0.02774  -1.689
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.252                                                           
+ag_g25-34yo -0.304  0.485                                                    
+ag_g35-44yo -0.303  0.478  0.585                                             
+ag_g45-54yo -0.296  0.462  0.563  0.566                                      
+ag_grp55+yr -0.334  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.190 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.185 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.174 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.189 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC logLik deviance  Chisq Df Pr(&gt;Chisq)  
+fit_3    8 198438 198511 -99211   198422                       
+fit_4   12 198436 198546 -99206   198412 9.6896  4    0.04599 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+     AIC      BIC   logLik deviance df.resid 
+198356.4 198593.8 -99152.2 198304.4    68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2205 -0.6990 -0.1432  0.6353  2.8775 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr                   
+ country  (Intercept)              0.069518 0.26366                         
+          age_group25-34 years old 0.002561 0.05061  -0.18                  
+          age_group35-44 years old 0.008256 0.09086  -0.15  1.00            
+          age_group45-54 years old 0.014301 0.11959  -0.22  0.66  0.65      
+          age_group55+ years       0.018410 0.13568  -0.32  0.38  0.38  0.94
+ Residual                          1.068847 1.03385                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.69381    0.03437  78.371
+mh_problemsTRUE                          -0.03637    0.02080  -1.748
+age_group25-34 years old                 -0.06482    0.01821  -3.560
+age_group35-44 years old                 -0.09083    0.02081  -4.364
+age_group45-54 years old                 -0.07930    0.02332  -3.400
+age_group55+ years                       -0.03399    0.02346  -1.449
+mh_problemsTRUE:age_group25-34 years old -0.06299    0.02700  -2.333
+mh_problemsTRUE:age_group35-44 years old -0.05323    0.02842  -1.873
+mh_problemsTRUE:age_group45-54 years old -0.07959    0.03038  -2.620
+mh_problemsTRUE:age_group55+ years       -0.04689    0.02807  -1.671
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.251                                                           
+ag_g25-34yo -0.346  0.461                                                    
+ag_g35-44yo -0.336  0.413  0.656                                             
+ag_g45-54yo -0.357  0.370  0.561  0.599                                      
+ag_grp55+yr -0.437  0.370  0.518  0.527  0.763                               
+m_TRUE:_2yo  0.191 -0.756 -0.590 -0.318 -0.282 -0.281                        
+m_TRUE:_3yo  0.184 -0.729 -0.341 -0.520 -0.274 -0.271  0.562                 
+m_TRUE:_4yo  0.172 -0.685 -0.316 -0.285 -0.466 -0.265  0.520       0.505     
+m_TRUE:_55y  0.187 -0.741 -0.343 -0.308 -0.282 -0.402  0.561       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.518     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3a   22 198356 198557 -99156   198312                     
+fit_4a   26 198356 198594 -99152   198304 7.4125  4     0.1156</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:  10. govt_comms_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 210951.1  211015.2 -105468.5  210937.1     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.7656 -0.7761 -0.1637  0.5129  3.1884 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.07072  0.2659  
+ Residual             1.15291  1.0737  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.17354    0.03344  65.006
+age_group25-34 years old  0.02108    0.01334   1.580
+age_group35-44 years old  0.04993    0.01389   3.595
+age_group45-54 years old  0.05390    0.01477   3.648
+age_group55+ years        0.08664    0.01351   6.415
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.234                     
+ag_g35-44yo -0.231  0.566              
+ag_g45-54yo -0.222  0.535  0.534       
+ag_grp55+yr -0.249  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 201611.9  201685.0 -100798.0  201595.9     68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.8083 -0.7990 -0.1583  0.5059  3.2496 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.07097  0.2664  
+ Residual             1.12373  1.0601  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.15899    0.03372  64.036
+mh_problemsTRUE          -0.02940    0.00909  -3.234
+age_group25-34 years old  0.02560    0.01346   1.902
+age_group35-44 years old  0.04972    0.01402   3.546
+age_group45-54 years old  0.06432    0.01492   4.310
+age_group55+ years        0.09854    0.01372   7.183
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.105                            
+ag_g25-34yo -0.237  0.013                     
+ag_g35-44yo -0.236  0.034  0.568              
+ag_g45-54yo -0.229  0.051  0.537  0.537       
+ag_grp55+yr -0.261  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 201324.6  201525.4 -100640.3  201280.6     68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0619 -0.7909 -0.1573  0.5314  3.2949 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr                   
+ country  (Intercept)              0.062550 0.25010                         
+          age_group25-34 years old 0.002358 0.04856   0.11                  
+          age_group35-44 years old 0.007912 0.08895   0.27  0.84            
+          age_group45-54 years old 0.018845 0.13728  -0.03 -0.01  0.50      
+          age_group55+ years       0.042718 0.20668  -0.01 -0.06  0.40  0.88
+ Residual                          1.115543 1.05619                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.170493   0.031997  67.834
+mh_problemsTRUE          -0.039015   0.009125  -4.276
+age_group25-34 years old  0.025332   0.014822   1.709
+age_group35-44 years old  0.045605   0.017799   2.562
+age_group45-54 years old  0.060859   0.022334   2.725
+age_group55+ years        0.113203   0.028602   3.958
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.116                            
+ag_g25-34yo -0.198  0.017                     
+ag_g35-44yo -0.058  0.035  0.624              
+ag_g45-54yo -0.190  0.040  0.339  0.519       
+ag_grp55+yr -0.140  0.048  0.246  0.437  0.752
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 201611.1  201720.6 -100793.5  201587.1     68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.8165 -0.7920 -0.1565  0.5059  3.2605 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.07092  0.2663  
+ Residual             1.12358  1.0600  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.166256   0.034598  62.613
+mh_problemsTRUE                          -0.046556   0.021004  -2.216
+age_group25-34 years old                  0.025582   0.017264   1.482
+age_group35-44 years old                  0.048675   0.017743   2.743
+age_group45-54 years old                  0.055843   0.018578   3.006
+age_group55+ years                        0.080761   0.016725   4.829
+mh_problemsTRUE:age_group25-34 years old -0.001332   0.027452  -0.049
+mh_problemsTRUE:age_group35-44 years old -0.000691   0.028643  -0.024
+mh_problemsTRUE:age_group45-54 years old  0.020780   0.030713   0.677
+mh_problemsTRUE:age_group55+ years        0.065287   0.028389   2.300
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.248                                                           
+ag_g25-34yo -0.299  0.485                                                    
+ag_g35-44yo -0.298  0.478  0.585                                             
+ag_g45-54yo -0.291  0.462  0.563  0.566                                      
+ag_grp55+yr -0.329  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.187 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.182 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.171 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.186 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)  
+fit_3    8 201612 201685 -100798   201596                       
+fit_4   12 201611 201721 -100794   201587 8.8941  4     0.0638 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 201332.8  201570.2 -100640.4  201280.8     68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0563 -0.7983 -0.1583  0.5246  3.2886 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev. Corr                   
+ country  (Intercept)              0.0626611 0.25032                         
+          age_group25-34 years old 0.0003244 0.01801   0.40                  
+          age_group35-44 years old 0.0062717 0.07919   0.35  1.00            
+          age_group45-54 years old 0.0209498 0.14474  -0.06  0.53  0.54      
+          age_group55+ years       0.0450379 0.21222  -0.04  0.43  0.44  0.89
+ Residual                          1.1156640 1.05625                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.179322   0.032933  66.175
+mh_problemsTRUE                          -0.054406   0.021090  -2.580
+age_group25-34 years old                  0.019556   0.017423   1.122
+age_group35-44 years old                  0.038797   0.020270   1.914
+age_group45-54 years old                  0.051302   0.025474   2.014
+age_group55+ years                        0.096715   0.030708   3.150
+mh_problemsTRUE:age_group25-34 years old  0.004027   0.027411   0.147
+mh_problemsTRUE:age_group35-44 years old  0.010025   0.028860   0.347
+mh_problemsTRUE:age_group45-54 years old  0.016435   0.030992   0.530
+mh_problemsTRUE:age_group55+ years        0.043585   0.028651   1.521
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.263                                                           
+ag_g25-34yo -0.272  0.481                                                    
+ag_g35-44yo -0.136  0.424  0.573                                             
+ag_g45-54yo -0.264  0.341  0.454  0.540                                      
+ag_grp55+yr -0.214  0.282  0.383  0.474  0.751                               
+m_TRUE:_2yo  0.199 -0.752 -0.622 -0.324 -0.258 -0.213                        
+m_TRUE:_3yo  0.193 -0.725 -0.354 -0.540 -0.251 -0.207  0.553                 
+m_TRUE:_4yo  0.180 -0.680 -0.328 -0.291 -0.433 -0.200  0.513       0.497     
+m_TRUE:_55y  0.194 -0.736 -0.354 -0.312 -0.255 -0.313  0.553       0.534     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.509     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
+fit_3a   22 201325 201525 -100640   201281                    
+fit_4a   26 201333 201570 -100640   201281     0  4          1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:  11. social_media_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 210951.5  211015.6 -105468.7  210937.5     70676 
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.22310 -0.76581 -0.08644  0.73179  2.95434 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.1034   0.3215  
+ Residual             1.1525   1.0735  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.43769    0.03980  61.243
+age_group25-34 years old  0.03074    0.01334   2.305
+age_group35-44 years old  0.13293    0.01388   9.574
+age_group45-54 years old  0.23654    0.01477  16.010
+age_group55+ years        0.42947    0.01351  31.796
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.197                     
+ag_g35-44yo -0.194  0.566              
+ag_g45-54yo -0.187  0.535  0.534       
+ag_grp55+yr -0.209  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 202160.2  202233.2 -101072.1  202144.2     68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2899 -0.7562 -0.0782  0.7388  3.0719 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.1043   0.323   
+ Residual             1.1324   1.064   
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.463475   0.040180  61.311
+mh_problemsTRUE          -0.099716   0.009126 -10.926
+age_group25-34 years old  0.028392   0.013509   2.102
+age_group35-44 years old  0.124864   0.014075   8.871
+age_group45-54 years old  0.232475   0.014983  15.516
+age_group55+ years        0.421282   0.013775  30.582
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.088                            
+ag_g25-34yo -0.199  0.013                     
+ag_g35-44yo -0.199  0.034  0.568              
+ag_g45-54yo -0.193  0.051  0.537  0.537       
+ag_grp55+yr -0.220  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 201467.5  201668.3 -100711.7  201423.5     68113 
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.47011 -0.75943 -0.07379  0.69710  3.12238 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr                   
+ country  (Intercept)              0.076588 0.27674                         
+          age_group25-34 years old 0.007817 0.08841   0.43                  
+          age_group35-44 years old 0.019157 0.13841   0.42  0.67            
+          age_group45-54 years old 0.025939 0.16106   0.31  0.68  0.67      
+          age_group55+ years       0.093756 0.30620  -0.02  0.48  0.42  0.93
+ Residual                          1.116533 1.05666                         
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.463075   0.035020  70.333
+mh_problemsTRUE          -0.097081   0.009138 -10.624
+age_group25-34 years old  0.028195   0.017409   1.620
+age_group35-44 years old  0.123455   0.021919   5.632
+age_group45-54 years old  0.234986   0.024520   9.583
+age_group55+ years        0.428196   0.039341  10.884
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.107                            
+ag_g25-34yo  0.054  0.018                     
+ag_g35-44yo  0.143  0.031  0.608              
+ag_g45-54yo  0.083  0.038  0.592  0.622       
+ag_grp55+yr -0.107  0.034  0.437  0.427  0.806
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 202162.4  202272.0 -101069.2  202138.4     68123 
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.29839 -0.75821 -0.07656  0.74046  3.05188 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.1042   0.3228  
+ Residual             1.1323   1.0641  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.44786    0.04091  59.829
+mh_problemsTRUE                          -0.06215    0.02109  -2.948
+age_group25-34 years old                  0.04065    0.01733   2.346
+age_group35-44 years old                  0.14286    0.01781   8.020
+age_group45-54 years old                  0.25791    0.01865  13.827
+age_group55+ years                        0.43954    0.01679  26.171
+mh_problemsTRUE:age_group25-34 years old -0.02953    0.02756  -1.071
+mh_problemsTRUE:age_group35-44 years old -0.04484    0.02875  -1.560
+mh_problemsTRUE:age_group45-54 years old -0.06926    0.03083  -2.246
+mh_problemsTRUE:age_group55+ years       -0.04802    0.02850  -1.685
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.210                                                           
+ag_g25-34yo -0.254  0.485                                                    
+ag_g35-44yo -0.253  0.477  0.585                                             
+ag_g45-54yo -0.247  0.462  0.563  0.567                                      
+ag_grp55+yr -0.279  0.517  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.159 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.154 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.145 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.158 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3    8 202160 202233 -101072   202144                     
+fit_4   12 202162 202272 -101069   202138 5.7749  4     0.2166</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 201474.5  201711.9 -100711.2  201422.5     68109 
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.48207 -0.75428 -0.07334  0.69512  3.12376 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr               
+ country  (Intercept)              0.073183 0.27052                     
+          age_group25-34 years old 0.002932 0.05415  1.00               
+          age_group35-44 years old 0.015804 0.12571  0.57 0.57          
+          age_group45-54 years old 0.020331 0.14259  0.47 0.47 0.59     
+          age_group55+ years       0.081332 0.28519  0.08 0.08 0.27 0.90
+ Residual                          1.116862 1.05682                     
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.44475    0.03508  69.687
+mh_problemsTRUE                          -0.05376    0.02100  -2.560
+age_group25-34 years old                  0.03898    0.01839   2.119
+age_group35-44 years old                  0.14281    0.02334   6.118
+age_group45-54 years old                  0.26515    0.02522  10.515
+age_group55+ years                        0.45427    0.03825  11.876
+mh_problemsTRUE:age_group25-34 years old -0.02264    0.02740  -0.826
+mh_problemsTRUE:age_group35-44 years old -0.04675    0.02895  -1.615
+mh_problemsTRUE:age_group45-54 years old -0.08152    0.03075  -2.651
+mh_problemsTRUE:age_group55+ years       -0.07158    0.02863  -2.500
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.245                                                           
+ag_g25-34yo  0.050  0.451                                                    
+ag_g35-44yo  0.114  0.366  0.543                                             
+ag_g45-54yo  0.079  0.341  0.495  0.574                                      
+ag_grp55+yr -0.072  0.224  0.277  0.360  0.747                               
+m_TRUE:_2yo  0.184 -0.748 -0.586 -0.277 -0.258 -0.168                        
+m_TRUE:_3yo  0.178 -0.721 -0.328 -0.467 -0.250 -0.162  0.544                 
+m_TRUE:_4yo  0.168 -0.680 -0.310 -0.253 -0.435 -0.161  0.513       0.496     
+m_TRUE:_55y  0.179 -0.734 -0.330 -0.268 -0.255 -0.251  0.548       0.529     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.509     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3a   22 201467 201668 -100712   201423                     
+fit_4a   26 201474 201712 -100711   201422 0.9649  4     0.9151</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:  12. internet_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 210015.2  210079.4 -105000.6  210001.2     70676 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2145 -0.6824 -0.1738  0.5377  3.0934 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.08242  0.2871  
+ Residual             1.13757  1.0666  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                         Estimate Std. Error t value
+(Intercept)               2.20183    0.03583  61.452
+age_group25-34 years old  0.02722    0.01325   2.054
+age_group35-44 years old  0.13402    0.01379   9.716
+age_group45-54 years old  0.17317    0.01468  11.799
+age_group55+ years        0.32671    0.01342  24.350
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.217                     
+ag_g35-44yo -0.214  0.566              
+ag_g45-54yo -0.206  0.535  0.534       
+ag_grp55+yr -0.231  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 201020.7  201093.7 -100502.3  201004.7     68127 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2759 -0.6846 -0.1759  0.5449  3.2070 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.08411  0.290   
+ Residual             1.11382  1.055   
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.207466   0.036379  60.680
+mh_problemsTRUE          -0.071863   0.009051  -7.940
+age_group25-34 years old  0.030541   0.013397   2.280
+age_group35-44 years old  0.135556   0.013959   9.711
+age_group45-54 years old  0.182204   0.014858  12.263
+age_group55+ years        0.331108   0.013660  24.239
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.097                            
+ag_g25-34yo -0.218  0.013                     
+ag_g35-44yo -0.218  0.034  0.568              
+ag_g45-54yo -0.211  0.051  0.537  0.537       
+ag_grp55+yr -0.241  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 200384.9  200585.7 -100170.4  200340.9     68113 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.7220 -0.7434 -0.1621  0.5513  3.1320 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr               
+ country  (Intercept)              0.061028 0.24704                     
+          age_group25-34 years old 0.004694 0.06851  0.07               
+          age_group35-44 years old 0.024562 0.15672  0.27 0.89          
+          age_group45-54 years old 0.030891 0.17576  0.29 0.67 0.85     
+          age_group55+ years       0.103699 0.32202  0.08 0.65 0.67 0.91
+ Residual                          1.099256 1.04845                     
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.234535   0.031677  70.541
+mh_problemsTRUE          -0.082063   0.009067  -9.050
+age_group25-34 years old  0.013341   0.015903   0.839
+age_group35-44 years old  0.113429   0.023577   4.811
+age_group45-54 years old  0.167223   0.025895   6.458
+age_group55+ years        0.340836   0.041109   8.291
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.118                            
+ag_g25-34yo -0.192  0.020                     
+ag_g35-44yo  0.039  0.029  0.670              
+ag_g45-54yo  0.073  0.037  0.558  0.747       
+ag_grp55+yr -0.019  0.033  0.481  0.621  0.803
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 201024.5  201134.0 -100500.2  201000.5     68123 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2725 -0.6810 -0.1755  0.5392  3.1995 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.08412  0.290   
+ Residual             1.11375  1.055   
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.202096   0.037203  59.192
+mh_problemsTRUE                          -0.058424   0.020913  -2.794
+age_group25-34 years old                  0.045314   0.017188   2.636
+age_group35-44 years old                  0.145345   0.017666   8.228
+age_group45-54 years old                  0.184500   0.018498   9.974
+age_group55+ years                        0.332019   0.016654  19.936
+mh_problemsTRUE:age_group25-34 years old -0.038178   0.027332  -1.397
+mh_problemsTRUE:age_group35-44 years old -0.026258   0.028517  -0.921
+mh_problemsTRUE:age_group45-54 years old -0.003400   0.030579  -0.111
+mh_problemsTRUE:age_group55+ years        0.007428   0.028265   0.263
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.229                                                           
+ag_g25-34yo -0.277  0.485                                                    
+ag_g35-44yo -0.276  0.478  0.585                                             
+ag_g45-54yo -0.269  0.462  0.563  0.566                                      
+ag_grp55+yr -0.305  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.173 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.168 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.158 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.172 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3    8 201021 201094 -100502   201005                     
+fit_4   12 201024 201134 -100500   201000 4.1837  4     0.3817</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 200405.8  200643.2 -100176.9  200353.8     68109 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.7170 -0.7359 -0.1624  0.5559  3.1425 
+
+Random effects:
+ Groups   Name                     Variance  Std.Dev. Corr               
+ country  (Intercept)              0.0563855 0.2375                      
+          age_group25-34 years old 0.0006605 0.0257   1.00               
+          age_group35-44 years old 0.0164271 0.1282   0.55 0.55          
+          age_group45-54 years old 0.0250167 0.1582   0.48 0.48 0.83     
+          age_group55+ years       0.0901207 0.3002   0.22 0.22 0.61 0.87
+ Residual                          1.0996908 1.0487                      
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                         Estimate Std. Error t value
+(Intercept)                               2.22077    0.03145  70.605
+mh_problemsTRUE                          -0.06343    0.02087  -3.039
+age_group25-34 years old                  0.03140    0.01738   1.807
+age_group35-44 years old                  0.12820    0.02345   5.468
+age_group45-54 years old                  0.17857    0.02645   6.752
+age_group55+ years                        0.35730    0.03985   8.967
+mh_problemsTRUE:age_group25-34 years old -0.02351    0.02719  -0.864
+mh_problemsTRUE:age_group35-44 years old -0.02200    0.02870  -0.767
+mh_problemsTRUE:age_group45-54 years old -0.01088    0.03063  -0.355
+mh_problemsTRUE:age_group55+ years       -0.02738    0.02845  -0.962
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.272                                                           
+ag_g25-34yo -0.162  0.475                                                    
+ag_g35-44yo  0.075  0.362  0.495                                             
+ag_g45-54yo  0.085  0.324  0.444  0.689                                      
+ag_grp55+yr  0.034  0.214  0.288  0.552  0.743                               
+m_TRUE:_2yo  0.205 -0.749 -0.617 -0.275 -0.244 -0.161                        
+m_TRUE:_3yo  0.198 -0.723 -0.347 -0.462 -0.238 -0.156  0.546                 
+m_TRUE:_4yo  0.186 -0.679 -0.325 -0.250 -0.413 -0.151  0.512       0.499     
+m_TRUE:_55y  0.199 -0.734 -0.348 -0.265 -0.240 -0.240  0.549       0.531     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.505     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
+fit_3a   22 200385 200586 -100170   200341                    
+fit_4a   26 200406 200643 -100177   200354     0  4          1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current outcome variable:  13. messaging_media 
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 213587.3  213651.5 -106786.7  213573.3     70676 
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.13746 -0.76119 -0.08104  0.73333  2.75094 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.09215  0.3036  
+ Residual             1.19646  1.0938  
+Number of obs: 70683, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.551768   0.037792  67.522
+age_group25-34 years old -0.002498   0.013592  -0.184
+age_group35-44 years old  0.054819   0.014146   3.875
+age_group45-54 years old  0.123528   0.015053   8.206
+age_group55+ years        0.286562   0.013761  20.824
+
+Correlation of Fixed Effects:
+            (Intr) a_25yo a_35yo a_45yo
+ag_g25-34yo -0.211                     
+ag_g35-44yo -0.208  0.566              
+ag_g45-54yo -0.200  0.535  0.534       
+ag_grp55+yr -0.225  0.589  0.593  0.584
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 204808.9  204881.9 -102396.4  204792.9     68127 
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.16045 -0.75280 -0.07874  0.72849  2.83134 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.09191  0.3032  
+ Residual             1.17746  1.0851  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.570389   0.037972  67.691
+mh_problemsTRUE          -0.082229   0.009306  -8.836
+age_group25-34 years old -0.004909   0.013775  -0.356
+age_group35-44 years old  0.052723   0.014352   3.674
+age_group45-54 years old  0.126399   0.015277   8.274
+age_group55+ years        0.280498   0.014045  19.971
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.095                            
+ag_g25-34yo -0.215  0.013                     
+ag_g35-44yo -0.214  0.034  0.568              
+ag_g45-54yo -0.208  0.051  0.537  0.537       
+ag_grp55+yr -0.237  0.108  0.589  0.596  0.589</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems + age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 204084.2  204285.0 -102020.1  204040.2     68113 
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.32486 -0.74332 -0.08723  0.68207  2.89214 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr               
+ country  (Intercept)              0.064554 0.2541                      
+          age_group25-34 years old 0.002852 0.0534   1.00               
+          age_group35-44 years old 0.016051 0.1267   0.38 0.38          
+          age_group45-54 years old 0.035517 0.1885   0.19 0.19 0.60     
+          age_group55+ years       0.092756 0.3046   0.05 0.05 0.45 0.87
+ Residual                          1.160075 1.0771                      
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                          Estimate Std. Error t value
+(Intercept)               2.575436   0.032448  79.372
+mh_problemsTRUE          -0.086280   0.009312  -9.265
+age_group25-34 years old -0.002168   0.015098  -0.144
+age_group35-44 years old  0.048222   0.020921   2.305
+age_group45-54 years old  0.130710   0.027230   4.800
+age_group55+ years        0.288096   0.039261   7.338
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo
+mh_prblTRUE -0.116                            
+ag_g25-34yo  0.170  0.015                     
+ag_g35-44yo  0.084  0.030  0.466              
+ag_g45-54yo  0.009  0.032  0.334  0.565       
+ag_grp55+yr -0.049  0.034  0.207  0.446  0.782
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (1 | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 204815.7  204925.3 -102395.9  204791.7     68123 
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.16044 -0.75321 -0.07787  0.72809  2.82293 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ country  (Intercept) 0.09184  0.3031  
+ Residual             1.17744  1.0851  
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.563833   0.038792  66.092
+mh_problemsTRUE                          -0.066425   0.021502  -3.089
+age_group25-34 years old                  0.001456   0.017673   0.082
+age_group35-44 years old                  0.059164   0.018164   3.257
+age_group45-54 years old                  0.138425   0.019019   7.278
+age_group55+ years                        0.287381   0.017124  16.782
+mh_problemsTRUE:age_group25-34 years old -0.015626   0.028102  -0.556
+mh_problemsTRUE:age_group35-44 years old -0.015600   0.029321  -0.532
+mh_problemsTRUE:age_group45-54 years old -0.033549   0.031441  -1.067
+mh_problemsTRUE:age_group55+ years       -0.016565   0.029062  -0.570
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.226                                                           
+ag_g25-34yo -0.273  0.485                                                    
+ag_g35-44yo -0.272  0.478  0.585                                             
+ag_g45-54yo -0.266  0.462  0.563  0.566                                      
+ag_grp55+yr -0.300  0.518  0.630  0.638  0.632                               
+m_TRUE:_2yo  0.171 -0.753 -0.626 -0.364 -0.351 -0.393                        
+m_TRUE:_3yo  0.166 -0.725 -0.358 -0.611 -0.342 -0.385  0.554                 
+m_TRUE:_4yo  0.156 -0.680 -0.335 -0.332 -0.591 -0.364  0.517       0.499     
+m_TRUE:_55y  0.170 -0.739 -0.362 -0.359 -0.350 -0.557  0.560       0.540     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.507     
+Data: d
+Models:
+fit_3: outcome_var ~ mh_problems + age_group + (1 | country)
+fit_4: outcome_var ~ mh_problems * age_group + (1 | country)
+      npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3    8 204809 204882 -102396   204793                     
+fit_4   12 204816 204925 -102396   204792 1.1399  4     0.8879</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by maximum likelihood  ['lmerMod']
+Formula: outcome_var ~ mh_problems * age_group + (age_group | country)
+   Data: d
+
+      AIC       BIC    logLik  deviance  df.resid 
+ 204088.2  204325.5 -102018.1  204036.2     68109 
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.33427 -0.73557 -0.09031  0.68694  2.88915 
+
+Random effects:
+ Groups   Name                     Variance Std.Dev. Corr               
+ country  (Intercept)              0.064219 0.25341                     
+          age_group25-34 years old 0.002933 0.05415  1.00               
+          age_group35-44 years old 0.016053 0.12670  0.39 0.39          
+          age_group45-54 years old 0.035834 0.18930  0.19 0.19 0.60     
+          age_group55+ years       0.093408 0.30563  0.05 0.05 0.46 0.87
+ Residual                          1.160015 1.07704                     
+Number of obs: 68135, groups:  country, 70
+
+Fixed effects:
+                                          Estimate Std. Error t value
+(Intercept)                               2.566174   0.033329  76.995
+mh_problemsTRUE                          -0.063861   0.021425  -2.981
+age_group25-34 years old                  0.001282   0.018710   0.069
+age_group35-44 years old                  0.056077   0.023703   2.366
+age_group45-54 years old                  0.147195   0.029562   4.979
+age_group55+ years                        0.303390   0.040625   7.468
+mh_problemsTRUE:age_group25-34 years old -0.007305   0.027937  -0.261
+mh_problemsTRUE:age_group35-44 years old -0.018265   0.029525  -0.619
+mh_problemsTRUE:age_group45-54 years old -0.045623   0.031598  -1.444
+mh_problemsTRUE:age_group55+ years       -0.045220   0.029201  -1.549
+
+Correlation of Fixed Effects:
+            (Intr) m_TRUE a_25yo a_35yo a_45yo a_55+y m_TRUE:_2yo m_TRUE:_3yo
+mh_prblTRUE -0.263                                                           
+ag_g25-34yo  0.019  0.452                                                    
+ag_g35-44yo -0.019  0.368  0.502                                             
+ag_g45-54yo -0.067  0.297  0.384  0.572                                      
+ag_grp55+yr -0.101  0.216  0.258  0.463  0.768                               
+m_TRUE:_2yo  0.198 -0.747 -0.588 -0.278 -0.223 -0.162                        
+m_TRUE:_3yo  0.191 -0.722 -0.329 -0.469 -0.217 -0.157  0.544                 
+m_TRUE:_4yo  0.179 -0.677 -0.307 -0.251 -0.380 -0.151  0.507       0.493     
+m_TRUE:_55y  0.193 -0.734 -0.331 -0.270 -0.221 -0.241  0.548       0.530     
+            m_TRUE:_4yo
+mh_prblTRUE            
+ag_g25-34yo            
+ag_g35-44yo            
+ag_g45-54yo            
+ag_grp55+yr            
+m_TRUE:_2yo            
+m_TRUE:_3yo            
+m_TRUE:_4yo            
+m_TRUE:_55y  0.504     
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')
+
+Data: d
+Models:
+fit_3a: outcome_var ~ mh_problems + age_group + (age_group | country)
+fit_4a: outcome_var ~ mh_problems * age_group + (age_group | country)
+       npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
+fit_3a   22 204084 204285 -102020   204040                     
+fit_4a   26 204088 204326 -102018   204036 4.0286  4     0.4021</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'age_group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="trust_analysis_2_files/figure-html/unnamed-chunk-3-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

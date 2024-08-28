@@ -1,0 +1,612 @@
+---
+title: "Mental Health Analysis"
+author: "Alex Miles, Jeremy Miles"
+format:
+  html5:
+    fig-height: 20
+    fig-width: 15
+editor: visual
+keep-md: true
+execute: 
+  cache: true
+knitr: 
+  opts_chunk:
+    R.options:
+        knitr.graphics.auto_pdf: true
+---
+
+# Looking at Mental, Trust, Optimism and Age
+
+From doc: We can test for a significant difference in the strength of the relationship between mh and trust/optimism across age groups.
+
+```{r setup}
+#| echo: false
+
+library(dplyr)
+library(foreign)
+library(ggplot2)
+library(ggrepel)
+library(haven)
+library(knitr)
+library(locfit)
+
+DisplayGgplot <- function(p, width = 3, height = 2) {
+  file_name <- paste0(tempfile(), ".png")
+  suppressMessages(
+    ggplot2::ggsave(filename = file_name,
+                    plot = p,
+                    width = width,
+                    height = height,
+                    device = "png",
+                    units = "in")
+  )
+  
+  return(file_name)
+}
+
+```
+
+```{r fig.height=20,fig.width=15}
+#| echo: false
+
+
+
+# Download the .sav file from the URL if the file does not exist.
+if (!file.exists("Global_Listening_Project_Final_Data.sav")) {
+  url <- glue::glue("https://github.com/jeremymiles/glp/blob",
+                    "/main/Global%20Listening%20Project%20-", 
+                    "%20Final%20Data.sav?raw=true")
+  download.file(
+    url, 
+    destfile = "Global_Listening_Project_Final_Data.sav", mode = "wb")
+  
+  data_haven <- haven::read_sav("Global_Listening_Project_Final_Data.sav")
+  
+  # Save the data as a .sav file in a format compatible with foreign
+  haven::write_sav(data_haven, "Compatible_Final_Data.sav")
+  
+}
+# Read the .sav file using haven
+# Want to use foreign, as it keeps factor labels. Foreign can't read from the 
+# url, unclear why. Fix is to load with haven, write sav file, and read
+# that with foreign
+
+
+# Now read the  saved .sav file using foreign
+suppressWarnings({
+  orig_dat <- 
+    foreign::read.spss(
+      "Compatible_Final_Data.sav", 
+      to.data.frame = TRUE) 
+})
+
+# Removing data_haven from R environment
+rm(data_haven)
+
+
+names(orig_dat) <- tolower(names(orig_dat))
+
+```
+
+```{r}
+
+
+# rename the trust variables
+
+d <- orig_dat %>%
+  # ggplot uses alphabetical order, so a number at the 
+  # front keeps the order
+  dplyr::rename(
+    ` 1. national_tv_media_info` = a1_1,
+    ` 2. local_tv_media_info` = a1_2,
+    ` 3. trust_media_national_radio_media_info` = a1_3,
+    ` 4. local_radio_media_info` = a1_4,
+    ` 5. international_tv_media_info` = a1_5,
+    ` 6. international_radio_media_info` = a1_6,
+    ` 7. national_print_media_info` = a1_7,
+    ` 8. local_print_media_info` = a1_8,
+    ` 9. word_of_mouth_media_info` = a1_9,
+    `10. govt_comms_media_info` = a1_10,
+    `11. social_media_media_info` = a1_11,
+    `12. internet_media_info` = a1_12,
+    `13. messaging_media_info` = a1_13,
+    # people
+    ` 1. family_people_info`            = a2_1,
+    ` 2. religious_people_info`         = a2_2,
+    ` 3. community_leaders_people_info` = a2_3,
+    ` 4. friends_people_info`           = a2_4,
+    ` 5. social_medial_people_info`     = a2_5,
+    ` 6. local_politician_people_info`  = a2_6,
+    ` 7. govt_pol_leaders_people_info`  = a2_7,
+    ` 8. journalists_people_info`       = a2_8,
+    ` 9. ngos_people_info`              = a2_9,
+    `10. int_authority_people_info`     = a2_10,
+    `11. employer_colleague_people_info`= a2_11,
+    `12. family_doc_people_info`        = a2_12,
+    `13. scientist_people_info`         = a2_13,
+    # who would you trust to act in your interests?
+    `1. government_trust`          = b1_1,
+    `2. health_authorities_trust`  = b1_2,
+    `3. int_orgs_trust`            = b1_3,
+    # 
+    ` 1. neighbors_interest`          = b2_1,
+    ` 2. scientists_interest`         = b2_2,
+    ` 3. celebs_interest`             = b2_3,
+    ` 4. religious_interest`          = b2_4,
+    ` 5. community_leaders_interest`  = b2_5,
+    ` 6. politic_leaders_interest`    = b2_6,
+    ` 7. ngos_interest`               = b2_7,
+    ` 8. employer_interest`           = b2_8,
+    ` 9. family_docs_interest`        = b2_9,
+    `10. family_interest`             = b2_10
+  ) %>%
+  dplyr::mutate(
+    mh_problems = ifelse(c1_6 == "Yes", TRUE, ifelse(
+      c1_6 == "No", FALSE, NA)),
+    lonely = ifelse(c1_1 == "Yes", TRUE, ifelse(
+      c1_1 == "No", FALSE, NA))
+  ) %>%
+  dplyr::mutate_at(
+    vars(ends_with("info")), as.numeric
+  ) %>%
+    dplyr::mutate_at(
+    vars(ends_with("trust")), as.numeric
+  ) %>%
+    dplyr::mutate_at(
+    vars(ends_with("interest")), as.numeric
+  ) %>%
+  # Optimism
+  dplyr::mutate(
+    financial_optimism = 
+      ifelse(as.numeric(d1_1) < 5, as.numeric(d1_1), NA
+             ),
+    economy_optimism = 
+      ifelse(as.numeric(d1_2) < 5, as.numeric(d1_2), NA
+             ),
+    health_optimism = 
+      ifelse(as.numeric(d1_1) < 5, as.numeric(d1_1), NA
+             ),
+  )
+
+
+
+d <- d %>% dplyr::mutate(
+  global_region = as.character(global_region),
+  gender = as.character(gender),
+  gender = ifelse(gender %in% c("Male", "Female"), gender, NA),
+  youth = age_group == "18-24 years old",
+  youth = ifelse(youth, "Age 18-24", "Age25+"),
+  Region = as.character(region), 
+  country = as.character(country),
+  age_group = as.character(age_group),
+  age_group = 
+    ifelse(age_group == "Don't know/ Prefer not to say", NA, age_group))
+
+```
+
+```{r}
+
+#| results: asis
+RunModels <- function(ending, predictor) {
+  
+  vars <- d %>% 
+    select(ends_with(ending)) %>% 
+    names() 
+  
+  d$predictor <- d[[predictor]]
+  
+  for (outcome_var in vars) {
+    
+
+    cat("\n ====================Current outcome variable: ", outcome_var, "==============\n")
+    cat("\n ====================Predictor variable: ", predictor, "==============\n")
+    
+    d$outcome_var <- d[[outcome_var]]
+    
+    fit_1 <- lme4::lmer(outcome_var ~ (1|country), data = d, REML = FALSE)
+    fit_2 <- lme4::lmer(outcome_var ~ age_group + (1|country), data = d, 
+                        REML = FALSE)
+    
+    cat("\n\n\n==================== Fit 2: Age Group =============
+        \n")
+    cat("\n ====================Predictor variable: ", predictor, "==============\n")
+    summary(fit_2) %>% print()
+    
+    
+    fit_3 <- lme4::lmer(
+      outcome_var ~ predictor + age_group + (1|country), data = d, REML = FALSE
+    )
+    
+    cat("\n\n\n==================== Fit 3: Add Predictor =============
+        \n")
+    summary(fit_3) %>% print()
+    
+    fit_3a <- lme4::lmer(
+      outcome_var ~ predictor + age_group + (age_group|country), data = d, 
+      REML = FALSE
+    )
+    
+    cat("\n\n\n==================== Fit 3a: Add Random Slope for Predictor =============
+        \n")
+    summary(fit_3a) %>% print()
+    
+    anova(fit_3, fit_3a, test = "LRT")
+    
+    
+    fit_4 <- lme4::lmer(
+      outcome_var ~ predictor * age_group + (1|country), data = d, 
+      REML = FALSE
+    )
+    cat("\n\n\n==================== Fit 4: Add Interaction =============
+        \n")
+    summary(fit_4) %>% print()
+    
+    cat("\n\n\n==================== Fit 4: LRT to Get P-Value for Interaction =============
+        \n")
+    anova(fit_3, fit_4, test = "LRT") %>% print()
+    
+    fit_4a <- lme4::lmer(
+      outcome_var ~ predictor * age_group + (age_group|country), data = d, 
+      REML = FALSE
+    )
+    summary(fit_4a) %>% print()
+    anova(fit_3a, fit_4a, test = "LRT") %>% print()
+    
+    
+    d_grouped <- d%>% 
+      dplyr::filter(!is.na(predictor), !is.na(age_group)) %>%
+      dplyr::group_by(country) %>%
+      dplyr::mutate(outcome_var_mean = mean(outcome_var, na.rm = TRUE)) %>%
+      dplyr::mutate(outcome_var_centered = outcome_var - outcome_var_mean) %>%
+      dplyr::group_by(age_group, predictor) %>%
+      dplyr::summarise(outcome_var = mean(outcome_var_centered))
+    
+    p <- d_grouped %>% 
+      ggplot2::ggplot(
+        aes(x = age_group, y = outcome_var, group = predictor, color = predictor)
+      ) + 
+      geom_line() +
+      ggtitle(outcome_var)  
+    
+    print(p)
+    cat("\n ====================Predictor variable: ", predictor, "==============\n")
+    d_grouped %>%
+      tidyr::pivot_wider(
+        names_from = predictor,
+        values_from = outcome_var
+      ) %>% knitr::kable() %>% print()
+  }
+}  
+```
+
+# Results for Trust in Media Information and Mental Health Problems.
+
+Question: Who would you trust to give you accurate information about an emerging crisis?
+
+### Note: Higher score = LESS LIKELY to trust.
+
+Generally: Mental health problems are associated with HIGHER trust; loneliness
+is associated with HIGHER trust.
+
+
+## Country Level Summary
+
+```{r}
+
+
+d %>% dplyr::select(
+  country, ends_with("media_info")
+) %>%
+  dplyr::group_by(country) %>%
+  dplyr::summarise_all(
+    mean, na.rm = TRUE
+  ) %>% knitr::kable(digits = 2)
+  
+
+```
+
+Lots of output below. I will try to summarise.
+
+## 1. National TV
+
+35-44 have lower trust than 18-25; 45-54 and 55+ have higher trust than 18-25. 
+MH problems are associated with HIGHER trust (by 0.025 points on a 1-4 scale, 
+so not very much).
+
+The effect of MH problems on trust does not vary across age groups.
+Controlling for loneliness, age effect disappears. Barely statistically 
+significant interaction effect of loneliness and age - loneliness not associated
+with trust in 55+.
+
+
+## 2. local_tv_media
+
+45-54 and 55+ have HIGHER trust than 18-25.
+
+MH: There is a change in the relationship across age, which appears to be driven
+by 55+ with MH problems having higher trust than those without, 
+which is the reverse of other age groups.
+Loneliness: Large difference in trust for lonely vs not at up to age 44; 
+effect reduces and disappears at 55.
+
+## 3. national_radio_media
+
+35-44, 45-54 and 55+ have lower trust than youth. 
+MH problems not associated
+with trust (controlling for age group) No variation in MH effect across 
+age detected.
+Loneliness: consistent difference in trust up to age 55, then effect of 
+loneliness disappears. 
+
+## 4. local_radio_media
+
+All age groups have higher trust than youth. 
+
+MH problem effect does not vary across age.
+Loneliness effect varies slightly across age - oldest people have lowest effect.
+
+## 5. International TV
+
+35+ have less trust than youth. 
+MH: Larger trust gap in youth than older.
+Loneliness: Slightly larger in youth, but not statistically significant.
+
+## 6. International Radio
+
+Similar to TV, 35+ have less trust (55+ much less difference). 
+MH: Gap is larger in youth than older, but barely statistically significant.
+Loneliness: Age-Loneliness effect not (even close to) statistically significant.
+
+
+## 7. National Print Media
+
+All groups have lower trust than youth. 
+MH: No statistically significant 
+differences in the effect of MH on trust in different age groups.
+Loneliness: Larger trust gap ain younger (<45) age groups.
+
+## 8. Local Print Media
+
+No statistically significant age effect. 
+MH: Graph looks like something interesting 
+is happening, but appears not significant (possible estimation error though).
+Loneliness: Trust gap in lonely vs not shrinks in older age groups.
+
+## 9. Word of Mouth Media
+
+All groups HIGHER trust than youth. Smallest difference with 55+.
+MH: Smaller effect of MH in youth than in other age groups.
+Loneliness: Also smaller effect of loneliness in younger people. 
+
+## 10. Govt Communications
+
+35+ lower trust than youth. 
+MH: No statistically significant effect of MH on the level of trust across 
+age groups.
+Loneliness: Large effect for youth and up to age 44. Small or reversed effect
+for older.
+
+
+## 11. Social Media
+
+All age groups trust social media LESS than youth (25-34 only slightly, 55+ dramatically).
+
+MH: Effect of MH is consistent across age groups.
+Loneliness: Marginally significant effect. Hard to see in the graph. Perhaps
+smaller difference for younger people.
+
+
+
+## 12. Internet Media
+
+All age groups have significantly lower trust than youth - trust decreases with
+age.
+
+
+Effect of MH is consistent across age groups.
+Effect of loneliness is consistent across age.
+
+## 13. Messaging Media
+
+Trust lower in 35+ than youth. 55+ considerably so.
+
+No difference in the effect of MH or loneliness across age groups.
+
+(Sorry, the graphs are not positioned nicely, I can't work out how to make them appear in the right place.)
+
+```{r media_mh}
+
+RunModels(ending = "media_info", predictor = "mh_problems")
+
+```
+
+
+
+```{r media_lonely}
+
+RunModels(ending = "media_info", predictor = "lonely")
+
+```
+
+# A2: Which People Would you Trust for Information
+
+## Country Level Summary
+
+### Note: Higher score = LESS TRUST
+
+
+
+```{r}
+
+
+d %>% dplyr::select(
+  country, ends_with("people_info")
+) %>%
+  dplyr::group_by(country) %>%
+  dplyr::summarise_all(
+    mean, na.rm = TRUE
+  ) %>% knitr::kable(digits = 2)
+  
+
+```
+
+
+
+# A2: Results for Trust in Media Information and Loneliness.
+
+Question: Who would you trust to give you accurate information about an emerging 
+crisis?
+
+## 1. Family
+
+No evidence of age effects.
+MH associated with more trust in family. No difference in MH trust across age 
+groups.
+
+
+
+## 2. Religious Leaders
+
+25-44 have slightly more trust in religious leaders than youth. 55+ have less.
+
+MH associated with more trust. No differences found across age.
+
+## 3. Community Leaders
+
+55+ less trust than youth. 
+MH associated with more trust. No variation in the effect across age.
+
+## 4. Friends
+
+35-54 have more trust than yout. 25-34 and 55+ no differences seen.
+
+MH associated with less trust in friends. No evidence of age effect.
+
+## 5. Social Media
+
+Older people have less trust - amount decreases more as groups get older.
+MH problems associated with more trust. Age effect on difference is statistically
+significant, but a bit weird - effect of MH on trust is larger in 35-44 and 
+45-54 year olds than other groups. 
+
+## 6. Local politicians
+
+Trust decreases with older people. 
+MH problems predict greater trust. No age effect in the difference.
+
+## 7. Govt and political leaders
+
+All age groups trust less than youth. 
+MH predicts more trust. Larger trust gap for middle age groups than youth 
+and 55+.
+
+## 8. Journalists.
+
+Older groups trust less than youth.
+
+MH problems associated with more trust. No difference in effect across age.
+
+## 9. NGOs
+
+Older people have less trust in NGOs. 
+MH problems associated with less trust. No interaction effect.
+
+## 10. International Authorities
+
+Older people have lower trust. 
+
+MH problems associated with higher trust. No significant difference in MH 
+problems across age groups. 
+
+## 11. Employer and colleagues
+
+25-54 trust employer and colleagues more than youth, 55+ trust less than youth. 
+
+MH problems associated with more trust.  No interaction effect with age. 
+
+## 12. Family doctor or healthcare provides.
+
+Older ages trust their doctor more than youth (more when 55+).
+MH problems associated with more trust. No interaction effect with age.
+
+## 13. Scientists.
+
+Older age associated with less trust.
+
+Mental health associated with more trust. This gap shrinks in older age groups.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r info_mh}
+
+RunModels(ending = "people_info", predictor = "mh_problems")
+
+```
+
+
+
+```{r info_lonely}
+
+RunModels(ending = "people_info", predictor = "lonely")
+
+```
+
+# Which Organizations Would you Trust to act in your interests:
+
+### Higher score = LESS TRUST
+
+```{r}
+
+
+d %>% dplyr::select(
+  country, ends_with("trust")
+) %>%
+  dplyr::group_by(country) %>%
+  dplyr::summarise_all(
+    mean, na.rm = TRUE
+  ) %>% knitr::kable(digits = 2)
+
+```
+
+## Mental Health
+
+```{r trust_mh}
+
+RunModels(ending = "trust", predictor = "mh_problems")
+
+```
+
+# Which Organizations Would you Trust to act in your interests: Mental Health
+
+```{r trust_lonely}
+
+RunModels(ending = "trust", predictor = "lonely")
+
+```
+
+# Optimism
+
+### Note: Lower score = more optimistic
+
+```{r optimism}
+
+d %>% dplyr::select(
+  country, ends_with("optimism")
+) %>%
+  dplyr::group_by(country) %>%
+  dplyr::summarise_all(
+    mean, na.rm = TRUE
+  ) %>% knitr::kable(digits = 2)
+```
